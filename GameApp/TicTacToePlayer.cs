@@ -84,7 +84,7 @@ namespace GameApp
         }
         Application.DoEvents();
       } 
-      TransmitFile(PeerSocket1, @"C:\Users\joe\Desktop\Test1\", "TestFile.txt");
+      TransmitFile(PeerSocket1, @"C:\Users\joe\Desktop\Test1\", "Jabba.jpg");
               
       LogBox.Text += "\n Completed all tests!";
     }
@@ -112,31 +112,17 @@ namespace GameApp
       TransmitString(SocketConnectedToLobby, "?fi");
       LogBox.Text += "\n Transmitted FileRequest";
 
-      bool keepWaitingForFile = true;
+      //bool keepWaitingForFile = true;
+      ReceiveFile(SocketConnectedToLobby, @"C:\Users\joe\Desktop\Test2\Jabba.jpg");
+     
 
-      while (keepWaitingForFile)
-      {
-        ReceiveFile(SocketConnectedToLobby, @"C:\Users\joe\Desktop\Test2\TestFileRec.txt");
-      }
-    }
-
-    private int TransmitString(Socket socket, string msg)
-    {
-      byte[] sendBuffer = Encoding.UTF8.GetBytes(msg);
-      int bytesSent = socket.Send(sendBuffer);
-      return bytesSent;
-    }
-
-    private string ReceiveString(Socket socket)
-    {
-      byte[] receiveBuffer = new byte[1024];
-      int bytesReceived = socket.Receive(receiveBuffer);
-      return Encoding.UTF8.GetString(receiveBuffer, 0, bytesReceived);
+      LogBox.Text += "\n File recevied. Tests Complete!";
     }
 
     private int TransmitFile(Socket socket, string filePath, string fileName)
     {
-      TransmitString(socket, "!fi");
+      FileInfo toTransmitFileInfo = new FileInfo(filePath + fileName);
+      TransmitString(socket, "!fi:" + toTransmitFileInfo.Length);
 
       bool clientNotReady = true;
       while (clientNotReady)
@@ -152,15 +138,45 @@ namespace GameApp
 
     private int ReceiveFile(Socket socket, string completePath)
     {
-      byte[] fileBytes = new byte[8192];
+      byte[] fileSizeBuffer = new byte[20];
+      int numBytes = -1;
 
+      string filesize = ReceiveString(socket);
+      int sizeInBytes = int.Parse(filesize.Substring(4));
+
+
+      byte[] fileBuffer = new byte[sizeInBytes];
       TransmitString(socket, "!go");
 
-      int numBytes = socket.Receive(fileBytes);
+      bool keepWaiting = true;
+      while (keepWaiting)
+      {
+        if (socket.Poll(100, SelectMode.SelectRead))
+        {
 
-      File.WriteAllBytes(completePath, fileBytes);
+          numBytes = socket.Receive(fileBuffer);
+          keepWaiting = false;
+        }
+        Application.DoEvents();
+      }
+    
+      File.WriteAllBytes(completePath, fileBuffer);
 
       return numBytes;
+    }
+
+    private int TransmitString(Socket socket, string msg)
+    {
+      byte[] sendBuffer = Encoding.UTF8.GetBytes(msg);
+      int bytesSent = socket.Send(sendBuffer);
+      return bytesSent;
+    }
+
+    private string ReceiveString(Socket socket)
+    {
+      byte[] receiveBuffer = new byte[1024];
+      int bytesReceived = socket.Receive(receiveBuffer);
+      return Encoding.UTF8.GetString(receiveBuffer, 0, bytesReceived);
     }
 
     private void SendMove(int v)
