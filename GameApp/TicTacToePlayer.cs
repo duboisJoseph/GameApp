@@ -31,118 +31,6 @@ namespace GameApp
     {
       InitializeComponent();
     }
-    private void SendMove(int v)
-    {
-
-      string moveString = "I the pressed ";
-      if(IAmHost)
-      {
-        //Store Move locally
-        switch (v)
-        {
-          case 1:
-            {
-              moveString += "ROCK";
-              break;
-            }
-          case 2:
-            {
-              moveString += "PAPER";
-              break;
-            }
-          case 3:
-            {
-              moveString += "SCISSORS";
-              break;
-            }
-          default:
-            {
-              break;
-            }
-        }
-        LogBox.Text += "\n " + moveString;
-        //Wait for player moves
-
-        //Get Player moves
-
-        //Calculate Victor
-
-        //Send Results to players
-      } else
-      {
-        //Craft Move String
-        switch (v)
-        {
-          case 1:
-            {
-              moveString += "ROCK";
-              break;
-            }
-          case 2:
-            {
-              moveString += "PAPER";
-              break;
-            }
-          case 3:
-            {
-              moveString += "SCISSORS";
-              break;
-            }
-          default:
-            {
-              break;
-            }
-        }
-        LogBox.Text += "\n " + moveString;
-        
-        //Send Move
-
-        //Recive Ack
-      }
-    }
-
-    private int TransmitString(Socket socket, string msg)
-    {
-      byte[] sendBuffer = Encoding.UTF8.GetBytes(msg);
-      int bytesSent = socket.Send(sendBuffer);
-      return bytesSent;
-    }
-
-    private string ReceiveString(Socket socket)
-    {
-      byte[] receiveBuffer = new byte[1024];
-      int bytesReceived = socket.Receive(receiveBuffer);
-      return Encoding.UTF8.GetString(receiveBuffer, 0, bytesReceived);
-    }
-
-    private int TransmitFile(Socket socket, string filePath, string fileName)
-    {
-      TransmitString(socket, "!fi");
-
-      bool clientNotReady = true;
-      while (clientNotReady)
-      {
-        if (ReceiveString(socket) == "!go")
-        {
-          clientNotReady = false;
-          socket.SendFile(filePath + fileName);
-        }
-      }
-      return 1;
-    }
-
-    private int ReceiveFile(Socket socket, string completePath)
-    {
-      byte[] fileBytes = new byte[8192];
-      
-      TransmitString(socket, "!go");
-
-      int numBytes = socket.Receive(fileBytes);
-
-      File.WriteAllBytes(completePath,fileBytes);
-
-      return numBytes;
-    }
 
     private void HostLobby()
     {
@@ -229,6 +117,120 @@ namespace GameApp
       while (keepWaitingForFile)
       {
         ReceiveFile(SocketConnectedToLobby, @"C:\Users\joe\Desktop\Test2\TestFileRec.txt");
+      }
+    }
+
+    private int TransmitString(Socket socket, string msg)
+    {
+      byte[] sendBuffer = Encoding.UTF8.GetBytes(msg);
+      int bytesSent = socket.Send(sendBuffer);
+      return bytesSent;
+    }
+
+    private string ReceiveString(Socket socket)
+    {
+      byte[] receiveBuffer = new byte[1024];
+      int bytesReceived = socket.Receive(receiveBuffer);
+      return Encoding.UTF8.GetString(receiveBuffer, 0, bytesReceived);
+    }
+
+    private int TransmitFile(Socket socket, string filePath, string fileName)
+    {
+      TransmitString(socket, "!fi");
+
+      bool clientNotReady = true;
+      while (clientNotReady)
+      {
+        if (ReceiveString(socket) == "!go")
+        {
+          clientNotReady = false;
+          socket.SendFile(filePath + fileName);
+        }
+      }
+      return 1;
+    }
+
+    private int ReceiveFile(Socket socket, string completePath)
+    {
+      byte[] fileBytes = new byte[8192];
+
+      TransmitString(socket, "!go");
+
+      int numBytes = socket.Receive(fileBytes);
+
+      File.WriteAllBytes(completePath, fileBytes);
+
+      return numBytes;
+    }
+
+    private void SendMove(int v)
+    {
+
+      string moveString = "I the pressed ";
+      if (IAmHost)
+      {
+        //Store Move locally
+        switch (v)
+        {
+          case 1:
+            {
+              moveString += "ROCK";
+              break;
+            }
+          case 2:
+            {
+              moveString += "PAPER";
+              break;
+            }
+          case 3:
+            {
+              moveString += "SCISSORS";
+              break;
+            }
+          default:
+            {
+              break;
+            }
+        }
+        LogBox.Text += "\n " + moveString;
+        //Wait for player moves
+
+        //Get Player moves
+
+        //Calculate Victor
+
+        //Send Results to players
+      }
+      else
+      {
+        //Craft Move String
+        switch (v)
+        {
+          case 1:
+            {
+              moveString += "ROCK";
+              break;
+            }
+          case 2:
+            {
+              moveString += "PAPER";
+              break;
+            }
+          case 3:
+            {
+              moveString += "SCISSORS";
+              break;
+            }
+          default:
+            {
+              break;
+            }
+        }
+        LogBox.Text += "\n " + moveString;
+
+        //Send Move
+
+        //Recive Ack
       }
     }
 
