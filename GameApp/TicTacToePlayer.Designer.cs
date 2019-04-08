@@ -45,6 +45,9 @@
       this.PlyOneScoreLbl = new System.Windows.Forms.Label();
       this.PlyTwoScoreLbl = new System.Windows.Forms.Label();
       this.PlyThreeScoreLbl = new System.Windows.Forms.Label();
+      this.PlayerNameBox = new System.Windows.Forms.TextBox();
+      this.label1 = new System.Windows.Forms.Label();
+      this.LogBox = new System.Windows.Forms.RichTextBox();
       this.SuspendLayout();
       // 
       // IPBox
@@ -53,6 +56,7 @@
       this.IPBox.Name = "IPBox";
       this.IPBox.Size = new System.Drawing.Size(121, 20);
       this.IPBox.TabIndex = 0;
+      this.IPBox.Text = "127.0.0.1";
       this.IPBox.TextChanged += new System.EventHandler(this.IPBox_TextChanged);
       // 
       // PortBox
@@ -61,11 +65,13 @@
       this.PortBox.Name = "PortBox";
       this.PortBox.Size = new System.Drawing.Size(100, 20);
       this.PortBox.TabIndex = 1;
+      this.PortBox.Text = "3333";
       this.PortBox.TextChanged += new System.EventHandler(this.PortBox_TextChanged);
       // 
       // HostBtn
       // 
-      this.HostBtn.Location = new System.Drawing.Point(344, 11);
+      this.HostBtn.Enabled = false;
+      this.HostBtn.Location = new System.Drawing.Point(525, 11);
       this.HostBtn.Name = "HostBtn";
       this.HostBtn.Size = new System.Drawing.Size(75, 23);
       this.HostBtn.TabIndex = 2;
@@ -75,7 +81,8 @@
       // 
       // JoinBtn
       // 
-      this.JoinBtn.Location = new System.Drawing.Point(425, 11);
+      this.JoinBtn.Enabled = false;
+      this.JoinBtn.Location = new System.Drawing.Point(606, 12);
       this.JoinBtn.Name = "JoinBtn";
       this.JoinBtn.Size = new System.Drawing.Size(75, 23);
       this.JoinBtn.TabIndex = 3;
@@ -108,7 +115,7 @@
       this.StatusLbl.AutoSize = true;
       this.StatusLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.StatusLbl.ForeColor = System.Drawing.Color.Red;
-      this.StatusLbl.Location = new System.Drawing.Point(540, 13);
+      this.StatusLbl.Location = new System.Drawing.Point(40, 48);
       this.StatusLbl.Name = "StatusLbl";
       this.StatusLbl.Size = new System.Drawing.Size(92, 17);
       this.StatusLbl.TabIndex = 6;
@@ -148,11 +155,11 @@
       // 
       this.OutcomeLbl.AutoSize = true;
       this.OutcomeLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.OutcomeLbl.Location = new System.Drawing.Point(53, 197);
+      this.OutcomeLbl.Location = new System.Drawing.Point(473, 48);
       this.OutcomeLbl.Name = "OutcomeLbl";
-      this.OutcomeLbl.Size = new System.Drawing.Size(110, 31);
+      this.OutcomeLbl.Size = new System.Drawing.Size(172, 31);
       this.OutcomeLbl.TabIndex = 10;
-      this.OutcomeLbl.Text = "pending";
+      this.OutcomeLbl.Text = "Game Status";
       // 
       // PlyOneLbl
       // 
@@ -208,11 +215,43 @@
       this.PlyThreeScoreLbl.TabIndex = 16;
       this.PlyThreeScoreLbl.Text = "...";
       // 
+      // PlayerNameBox
+      // 
+      this.PlayerNameBox.Location = new System.Drawing.Point(396, 13);
+      this.PlayerNameBox.Name = "PlayerNameBox";
+      this.PlayerNameBox.Size = new System.Drawing.Size(100, 20);
+      this.PlayerNameBox.TabIndex = 17;
+      this.PlayerNameBox.TextChanged += new System.EventHandler(this.PlayerNameBox_TextChanged);
+      // 
+      // label1
+      // 
+      this.label1.AutoSize = true;
+      this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label1.Location = new System.Drawing.Point(319, 14);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(71, 17);
+      this.label1.TabIndex = 18;
+      this.label1.Text = "My Name:";
+      // 
+      // LogBox
+      // 
+      this.LogBox.Location = new System.Drawing.Point(44, 177);
+      this.LogBox.Margin = new System.Windows.Forms.Padding(10, 3, 3, 3);
+      this.LogBox.Name = "LogBox";
+      this.LogBox.ReadOnly = true;
+      this.LogBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+      this.LogBox.Size = new System.Drawing.Size(636, 78);
+      this.LogBox.TabIndex = 19;
+      this.LogBox.Text = "";
+      // 
       // TicTacToePlayer
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(708, 275);
+      this.Controls.Add(this.LogBox);
+      this.Controls.Add(this.label1);
+      this.Controls.Add(this.PlayerNameBox);
       this.Controls.Add(this.PlyThreeScoreLbl);
       this.Controls.Add(this.PlyTwoScoreLbl);
       this.Controls.Add(this.PlyOneScoreLbl);
@@ -256,6 +295,9 @@
     private System.Windows.Forms.Label PlyOneScoreLbl;
     private System.Windows.Forms.Label PlyTwoScoreLbl;
     private System.Windows.Forms.Label PlyThreeScoreLbl;
+    private System.Windows.Forms.TextBox PlayerNameBox;
+    private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.RichTextBox LogBox;
   }
 }
 
