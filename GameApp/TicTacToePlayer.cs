@@ -60,7 +60,6 @@ namespace GameApp
           LogBox.Text += "\n " + s.name + " says " + s.sb.ToString(); ;
         }
         //Interpret Results
-
       } else
       {
         if (SocketConnectedToLobby.Poll(100, SelectMode.SelectRead))
@@ -68,12 +67,13 @@ namespace GameApp
           LogBox.Text += "\nReceived: " + ReceiveString(SocketConnectedToLobby);
         }
       }
-     
     }
 
     private void HostLobby()
     {
-      playerCount = 2;
+      playerCount = 2; //NOTE THIS Defines the number of users you need to start game;
+
+
       Console.WriteLine("Started");
       AsynchronousSocketListener ASL = new AsynchronousSocketListener(IPAddress.Parse(IPBox.Text), int.Parse(PortBox.Text), playerCount);
 
