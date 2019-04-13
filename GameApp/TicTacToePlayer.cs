@@ -26,11 +26,49 @@ namespace GameApp
     private List<string> players = new List<string>();
     private static List<StateObject> ClientStates;
     private static StateObject HostState = new StateObject();
-
+    private Timer MyTimer;
 
     public TicTacToePlayer()
     {
       InitializeComponent();
+    }
+
+    private void InitializeTimer()
+    {
+      MyTimer = new Timer
+      {
+        // Call this procedure when the application starts.  
+        // 1000 = 1 second.  
+        Interval = 100
+      };
+      MyTimer.Tick += new EventHandler(MyTimer_tick);
+
+      // Enable timer.  
+      MyTimer.Enabled = false;
+    }
+
+    private void MyTimer_tick(object Sender, EventArgs e) //Event handler for Timer ticks.
+    {
+      bool endGame = false;
+
+      //Here is where we read from the sockets and handle game logic
+      if (IAmHost)
+      {
+        HostReceiveString();
+        foreach (StateObject s in ClientStates)
+        {
+          LogBox.Text += "\n " + s.name + " says " + s.sb.ToString(); ;
+        }
+        //Interpret Results
+
+      } else
+      {
+        if (SocketConnectedToLobby.Poll(100, SelectMode.SelectRead))
+        {
+          LogBox.Text += "\nReceived: " + ReceiveString(SocketConnectedToLobby);
+        }
+      }
+     
     }
 
     private void HostLobby()
@@ -44,41 +82,7 @@ namespace GameApp
 
       ClientStates = ASL.GetStateObjects();
       Console.WriteLine("Moved Here 2");
-      /*
-      //Create Listener
-      ListenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-      HostIPEndPoint = new IPEndPoint(IPAddress.Parse(IPBox.Text), int.Parse(PortBox.Text));
-      ListenerSocket.Bind(HostIPEndPoint);
 
-      //Listen
-      ListenerSocket.Listen(40);
-      StatusLbl.Text = "Waiting for players";
-      bool keepListening = true;
-
-      //Accept Socket
-      while (keepListening)
-      {
-        if (ListenerSocket.Poll(100, SelectMode.SelectRead))
-        {
-          PeerSocket1 = ListenerSocket.Accept();
-          playerCount++;
-          keepListening = false;
-        }
-        Application.DoEvents();
-      }
-
-      //Send Greeting
-      int bytesSent = TransmitString(PeerSocket1, PlayerNameBox.Text);
-
-      //Receive Response
-      string connectedPlayer = ReceiveString(PeerSocket1);
-
-      LogBox.Text += "\n" + connectedPlayer + " joined the game.";
-
-      players.Add(connectedPlayer);
-
-      StatusLbl.Text = playerCount + " connected players";
-      */
       int i = 0;
       foreach(StateObject s in ClientStates)
       {
@@ -95,25 +99,15 @@ namespace GameApp
         s.name = s.sb.ToString();
         LogBox.Text += "\n " + s.name + " connected...";
       }
+
+      MyTimer.Start();
     }
 
     private void JoinLobby()
     {
       IAmHost = false;
 
-      bool endGame = false;
-
       SocketConnectedToLobby = AsynchronousClient.StartClient(IPAddress.Parse(IPBox.Text), int.Parse(PortBox.Text));
-
-      /*//Create Socket
-      SocketConnectedToLobby = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-      HostIPEndPoint = new IPEndPoint(IPAddress.Parse(IPBox.Text), int.Parse(PortBox.Text));
-
-      //Connect To Lobby
-      StatusLbl.Text = "Connecting to game";
-      SocketConnectedToLobby.Connect(HostIPEndPoint);
-      */
-      //Receive Greeting
 
       Console.WriteLine("Waiting For Host's Name");
       LobbyOwner = ReceiveString(SocketConnectedToLobby);
@@ -125,18 +119,9 @@ namespace GameApp
       //Send player name
       TransmitString(SocketConnectedToLobby, PlayerNameBox.Text);
 
-      //TransmitString(SocketConnectedToLobby, PlayerNameBox.Text.ToString() + " is now waiting.");
       LogBox.Text += "\n Sucessfully joined the game.";
 
-      while (!endGame)
-      {
-        if (SocketConnectedToLobby.Poll(100, SelectMode.SelectRead))
-        {
-          LogBox.Text += "\nReceived: " + ReceiveString(SocketConnectedToLobby);
-          //keepListening = false;
-        }
-        Application.DoEvents();
-      }
+      MyTimer.Start();
     }
 
     private void TransmitString(Socket socket, string msg)
@@ -150,7 +135,6 @@ namespace GameApp
       foreach (StateObject s in ClientStates)
       {
         TransmitString(s.workSocket, msg);
-        //ReceiveString(s.workSocket, s);
       }
     }
 
@@ -176,39 +160,39 @@ namespace GameApp
     }
 
     private void DetermineVictor(Dictionary<string, string> players) {
-        List<string> names = new List<string>();
-        Dictionary<string, int> scores = new Dictionary<string, int>();
+      List<string> names = new List<string>();
+      Dictionary<string, int> scores = new Dictionary<string, int>();
         
-        for (int i = 0; i < players.Count; i++) {
-            names.Add(players.Keys.ElementAt(i));
-            scores.Add(players.Keys.ElementAt(i), 0);
+      for (int i = 0; i < players.Count; i++) {
+        names.Add(players.Keys.ElementAt(i));
+        scores.Add(players.Keys.ElementAt(i), 0);
+      }
+
+      for (int i = 0; i < players.Count; i++) {
+        if (players[names[i]] == "Rock" && players[names[i+1]] == "Scissors") {
+          scores[names[i]]++;
+        } else if (players[names[i+1]] == "Rock" && players[names[i]] == "Scissors") {
+          scores[names[i+1]]++;
         }
 
-        for (int i = 0; i < players.Count; i++) {
-            if (players[names[i]] == "Rock" && players[names[i+1]] == "Scissors") {
-                scores[names[i]]++;
-            } else if (players[names[i+1]] == "Rock" && players[names[i]] == "Scissors") {
-                scores[names[i+1]]++;
-            }
-
-            if (players[names[i]] == "Scissors" && players[names[i+1]] == "Paper") {
-                scores[names[i]]++;
-            } else if (players[names[i=1]] == "Scissors" && players[names[i]] == "Paper") {
-                scores[names[i+1]]++;
-            }
-
-            if (players[names[i]] == "Paper" && players[names[i+1]] == "Rock") {
-                scores[names[i]]++;
-            } else if (players[names[i+1]] == "Paper" && players[names[i]] == "Rock") {
-                scores[names[i+1]]++;
-            }
+        if (players[names[i]] == "Scissors" && players[names[i+1]] == "Paper") {
+          scores[names[i]]++;
+        } else if (players[names[i=1]] == "Scissors" && players[names[i]] == "Paper") {
+          scores[names[i+1]]++;
         }
 
-        for (int i = 0; i < players.Count; i++) {
-            if (scores[names[i]] > scores[names[i+1]] && scores[names[i]] > scores[names[i+2]]) {
-                LogBox.Text += "\nPlayer " + players.Keys.ElementAt(i) + " wins!";
-            }
+        if (players[names[i]] == "Paper" && players[names[i+1]] == "Rock") {
+           scores[names[i]]++;
+        } else if (players[names[i+1]] == "Paper" && players[names[i]] == "Rock") {
+           scores[names[i+1]]++;
         }
+      }
+
+      for (int i = 0; i < players.Count; i++) {
+        if (scores[names[i]] > scores[names[i+1]] && scores[names[i]] > scores[names[i+2]]) {
+          LogBox.Text += "\nPlayer " + players.Keys.ElementAt(i) + " wins!";
+        }
+      }
     }
 
     private void SendMove(int v)
@@ -371,24 +355,23 @@ namespace GameApp
       PortBox_TextChanged(sender, e);
     }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            int bytesSent;
-            //Send move to host:
-            if (!IAmHost)
-            {
-                TransmitString(SocketConnectedToLobby, PlayerNameBox.Text.ToString() + " " + chosenMovement);
-                LogBox.Text += "\n " + "Move sent.";
-                button1.Enabled = false;
+    private void button1_Click(object sender, EventArgs e)
+    {
+      int bytesSent;
+      //Send move to host:
+      if (!IAmHost)
+      {
+        TransmitString(SocketConnectedToLobby, PlayerNameBox.Text.ToString() + " " + chosenMovement);
+        LogBox.Text += "\n " + "Move sent.";
+        button1.Enabled = false;
 
-            }
-            //Send move to players:
-            else
-            {
-                //TransmitString(PeerSocket1, PlayerNameBox.Text.ToString() + " " + chosenMovement);
-                LogBox.Text += "\n " + "Move sent to all players.";
-            }
-
-        }
+      }
+      //Send move to players:
+      else
+      {
+        //TransmitString(PeerSocket1, PlayerNameBox.Text.ToString() + " " + chosenMovement);
+        LogBox.Text += "\n " + "Move sent to all players.";
+      }
     }
+  }
 }
