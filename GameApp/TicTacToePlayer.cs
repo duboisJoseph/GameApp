@@ -90,6 +90,8 @@ namespace GameApp
     private void JoinLobby()
     {
       IAmHost = false;
+
+      bool endGame = false;
       //Create Socket
       SocketConnectedToLobby = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
       HostIPEndPoint = new IPEndPoint(IPAddress.Parse(IPBox.Text), int.Parse(PortBox.Text));
@@ -110,6 +112,16 @@ namespace GameApp
 
       TransmitString(SocketConnectedToLobby, PlayerNameBox.Text.ToString() + " is now waiting.");
       LogBox.Text += "\n Sucessfully joined the game.";
+
+        while (!endGame)
+        {
+            if (SocketConnectedToLobby.Poll(100, SelectMode.SelectRead))
+            {
+                LogBox.Text += "\nReceived: " + ReceiveString(SocketConnectedToLobby);
+                //keepListening = false;
+            }
+            Application.DoEvents();
+        }
     }
 
     private int TransmitFile(Socket socket, string filePath, string fileName)
@@ -184,16 +196,19 @@ namespace GameApp
           case 1:
             {
               moveString += "ROCK";
+              chosenMovement = "1";
               break;
             }
           case 2:
             {
               moveString += "PAPER";
+              chosenMovement = "2";
               break;
             }
           case 3:
             {
               moveString += "SCISSORS";
+              chosenMovement = "3";
               break;
             }
           default:
@@ -343,8 +358,8 @@ namespace GameApp
             //Send move to players:
             else
             {
-
                 bytesSent = TransmitString(PeerSocket1, PlayerNameBox.Text.ToString() + " " + chosenMovement);
+                LogBox.Text += "\n " + "Move sent to all players.";
             }
 
         }
