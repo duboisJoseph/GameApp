@@ -46,6 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsynchronousSocketListener.cs" />
+    <Compile Include="AsynchronousClient.cs" />
+    <Compile Include="StateObject.cs" />
     <Compile Include="TicTacToePlayer.cs">
       <SubType>Form</SubType>
     </Compile>

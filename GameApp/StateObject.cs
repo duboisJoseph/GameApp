@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GameApp
 {
-  class StateObject
+  public class StateObject
   {
     // Client socket.  
     public Socket workSocket = null;
@@ -17,5 +17,9 @@ namespace GameApp
     public byte[] buffer = new byte[BufferSize];
     // Received data string.  
     public StringBuilder sb = new StringBuilder();
+
+    public bool sbChanged = false;
+
+    public string id = "?????";
   }
 }

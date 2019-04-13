@@ -6,7 +6,7 @@ using System.Text;
 
 namespace GameApp
 {
-  class AsynchronousClient
+  public class AsynchronousClient
   {
     // ManualResetEvent instances signal completion.  
     public static ManualResetEvent connectDone = new ManualResetEvent(false);
@@ -14,6 +14,15 @@ namespace GameApp
     public static ManualResetEvent receiveDone = new ManualResetEvent(false);
 
     private static String response = string.Empty;
+
+    public AsynchronousClient() { }
+
+    public string getResponse(Socket client)
+    {
+      Receive(client);
+      receiveDone.WaitOne();
+      return response;
+    }
 
     public static Socket StartClient(IPAddress IP, int Port)
     {
@@ -28,6 +37,8 @@ namespace GameApp
 
         client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
         connectDone.WaitOne();
+
+        Console.WriteLine("Moved past ConnectDone");
         
         /*
           // Send test data to the remote device.  
@@ -72,6 +83,8 @@ namespace GameApp
 
         // Signal that the connection has been made.  
         connectDone.Set();
+
+        Console.WriteLine("ConnectDoneSet");
       }
       catch (Exception e)
       {
@@ -81,8 +94,10 @@ namespace GameApp
 
     public static void Receive(Socket client)
     {
+      Console.WriteLine("Begun Receive");
       try
       {
+        receiveDone.Reset();
         // Create the state object.  
         StateObject state = new StateObject();
         state.workSocket = client;
@@ -100,50 +115,65 @@ namespace GameApp
     {
       try
       {
+        Console.WriteLine("ReceiveCallBAckEntered");
         // Retrieve the state object and the client socket   
         // from the asynchronous state object.  
         StateObject state = (StateObject)ar.AsyncState;
         Socket client = state.workSocket;
 
         // Read data from the remote device.  
+        Console.WriteLine("Stuck 1");
         int bytesRead = client.EndReceive(ar);
-
+        Console.WriteLine("Stuck 2");
         if (bytesRead > 0)
         {
+          Console.WriteLine("Went Here 1");
           // There might be more data, so store the data received so far.  
           state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
+          Console.WriteLine("Stuck 3");
 
           // Get the rest of the data.  
           client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
+          Console.WriteLine("Stuck 4");
+
         }
         else
         {
+          Console.WriteLine("Went Here 2");
           // All the data has arrived; put it in response.  
           if (state.sb.Length > 1)
           {
+            Console.WriteLine("Went Here 3");
             response = state.sb.ToString();
+            Console.WriteLine("readMessage" + response);
           }
           // Signal that all bytes have been received.  
           receiveDone.Set();
+          Console.WriteLine("All Finished Receiving");
         }
       }
       catch (Exception e)
       {
         Console.WriteLine(e.ToString());
       }
+      Console.WriteLine("Stuck 5");
     }
 
     public static void Send(Socket client, String data)
     {
+
+      Console.WriteLine("Begun Send");
       // Convert the string data to byte data using ASCII encoding.  
       byte[] byteData = Encoding.ASCII.GetBytes(data);
 
       // Begin sending the data to the remote device.  
       client.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), client);
+      Console.WriteLine("Completed Send");
     }
 
     private static void SendCallback(IAsyncResult ar)
     {
+      Console.WriteLine("Send Call Back");
       try
       {
         // Retrieve the socket from the state object.  
@@ -151,6 +181,8 @@ namespace GameApp
 
         // Complete sending the data to the remote device.  
         int bytesSent = client.EndSend(ar);
+
+        Console.WriteLine("Sent data");
         Console.WriteLine("Sent {0} bytes to server.", bytesSent);
 
         // Signal that all bytes have been sent.  
@@ -160,6 +192,7 @@ namespace GameApp
       {
         Console.WriteLine(e.ToString());
       }
+      Console.WriteLine("End Send Call Back");
     }
   }
 }

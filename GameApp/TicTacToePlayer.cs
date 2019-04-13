@@ -27,6 +27,9 @@ namespace GameApp
     private string LobbyOwner;
     private string chosenMovement;
     private List<string> players = new List<string>();
+    private static List<StateObject> ClientStates;
+    private static StateObject HostState = new StateObject();
+
 
     public TicTacToePlayer()
     {
@@ -35,10 +38,16 @@ namespace GameApp
 
     private void HostLobby()
     {
-      playerCount = 0;
+      playerCount = 2;
+      Console.WriteLine("Started");
+      AsynchronousSocketListener ASL = new AsynchronousSocketListener(IPAddress.Parse(IPBox.Text), int.Parse(PortBox.Text), playerCount);
 
+      Console.WriteLine("Moved Here 1");
       IAmHost = true;
 
+      ClientStates = ASL.GetStateObjects();
+      Console.WriteLine("Moved Here 2");
+      /*
       //Create Listener
       ListenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
       HostIPEndPoint = new IPEndPoint(IPAddress.Parse(IPBox.Text), int.Parse(PortBox.Text));
@@ -72,19 +81,10 @@ namespace GameApp
       players.Add(connectedPlayer);
 
       StatusLbl.Text = playerCount + " connected players";
+      */
+      int i = 0;
 
-      keepListening = true;
-
-      while (keepListening)
-      {
-        if (PeerSocket1.Poll(100, SelectMode.SelectRead))
-        {
-          LogBox.Text += "\nReceived: " + ReceiveString(PeerSocket1);
-          //keepListening = false;
-        }
-        Application.DoEvents();
-      } 
-              
+      HostTransmitString(PlayerNameBox.Text);
     }
 
     private void JoinLobby()
@@ -92,15 +92,20 @@ namespace GameApp
       IAmHost = false;
 
       bool endGame = false;
-      //Create Socket
+
+      SocketConnectedToLobby = AsynchronousClient.StartClient(IPAddress.Parse(IPBox.Text), int.Parse(PortBox.Text));
+
+      /*//Create Socket
       SocketConnectedToLobby = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
       HostIPEndPoint = new IPEndPoint(IPAddress.Parse(IPBox.Text), int.Parse(PortBox.Text));
 
       //Connect To Lobby
       StatusLbl.Text = "Connecting to game";
       SocketConnectedToLobby.Connect(HostIPEndPoint);
-
+      */
       //Receive Greeting
+
+      Console.WriteLine("Waiting For Host's Name");
       LobbyOwner = ReceiveString(SocketConnectedToLobby);
 
       LogBox.Text += "\n Joined " + LobbyOwner + "'s game.";
@@ -108,77 +113,49 @@ namespace GameApp
       StatusLbl.Text = "Connected";
 
       //Send player name
-      int bytesSent = TransmitString(SocketConnectedToLobby, PlayerNameBox.Text);
+      TransmitString(SocketConnectedToLobby, PlayerNameBox.Text);
 
-      TransmitString(SocketConnectedToLobby, PlayerNameBox.Text.ToString() + " is now waiting.");
+      //TransmitString(SocketConnectedToLobby, PlayerNameBox.Text.ToString() + " is now waiting.");
       LogBox.Text += "\n Sucessfully joined the game.";
 
-        while (!endGame)
-        {
-            if (SocketConnectedToLobby.Poll(100, SelectMode.SelectRead))
-            {
-                LogBox.Text += "\nReceived: " + ReceiveString(SocketConnectedToLobby);
-                //keepListening = false;
-            }
-            Application.DoEvents();
-        }
-    }
-
-    private int TransmitFile(Socket socket, string filePath, string fileName)
-    {
-      FileInfo toTransmitFileInfo = new FileInfo(filePath + fileName);
-      TransmitString(socket, "!fi:" + toTransmitFileInfo.Length);
-
-      bool clientNotReady = true;
-      while (clientNotReady)
+      while (!endGame)
       {
-        if (ReceiveString(socket) == "!go")
+        if (SocketConnectedToLobby.Poll(100, SelectMode.SelectRead))
         {
-          clientNotReady = false;
-          socket.SendFile(filePath + fileName);
-        }
-      }
-      return 1;
-    }
-
-    private int ReceiveFile(Socket socket, string completePath)
-    {
-      byte[] fileSizeBuffer = new byte[20];
-      int numBytes = -1;
-
-      string filesize = ReceiveString(socket);
-      int sizeInBytes = int.Parse(filesize.Substring(4));
-
-
-      byte[] fileBuffer = new byte[sizeInBytes];
-      TransmitString(socket, "!go");
-
-      bool keepWaiting = true;
-      while (keepWaiting)
-      {
-        if (socket.Poll(100, SelectMode.SelectRead))
-        {
-
-          numBytes = socket.Receive(fileBuffer);
-          keepWaiting = false;
+          LogBox.Text += "\nReceived: " + ReceiveString(SocketConnectedToLobby);
+          //keepListening = false;
         }
         Application.DoEvents();
       }
-    
-      File.WriteAllBytes(completePath, fileBuffer);
-
-      return numBytes;
     }
 
-    private int TransmitString(Socket socket, string msg)
+    private void TransmitString(Socket socket, string msg)
     {
+      //Console.WriteLine("Started to Transmit String");
+      //AsynchronousClient.Send(socket, msg);
+      //Console.WriteLine("Finished Transmitting String");
       byte[] sendBuffer = Encoding.UTF8.GetBytes(msg);
       int bytesSent = socket.Send(sendBuffer);
-      return bytesSent;
+      //return bytesSent;
+    }
+
+    private void HostTransmitString(string msg)
+    {
+      foreach (StateObject s in ClientStates)
+      {
+        TransmitString(s.workSocket, msg);
+        //ReceiveString(s.workSocket, s);
+      }
     }
 
     private string ReceiveString(Socket socket)
     {
+
+      //Console.WriteLine("Entered Receive String Function");
+      //AsynchronousClient a = new AsynchronousClient();
+      //Console.WriteLine("Stuck 5");
+      //return a.getResponse(socket);
+
       byte[] receiveBuffer = new byte[1024];
       int bytesReceived = socket.Receive(receiveBuffer);
       return Encoding.UTF8.GetString(receiveBuffer, 0, bytesReceived);
@@ -358,7 +335,7 @@ namespace GameApp
             //Send move to players:
             else
             {
-                bytesSent = TransmitString(PeerSocket1, PlayerNameBox.Text.ToString() + " " + chosenMovement);
+                TransmitString(PeerSocket1, PlayerNameBox.Text.ToString() + " " + chosenMovement);
                 LogBox.Text += "\n " + "Move sent to all players.";
             }
 

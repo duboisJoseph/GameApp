@@ -4,19 +4,26 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace GameApp
 {
-  class AsynchronousSocketListener
+  public class AsynchronousSocketListener
   {
     public static ManualResetEvent allDone = new ManualResetEvent(false);
-    public static List<StateObject> Handlers = new List<StateObject>();
+    static List<StateObject> Handlers = new  List<StateObject>();
 
-    public AsynchronousSocketListener()
+    public AsynchronousSocketListener(IPAddress IP, int port, int handlerPool)
     {
+      StartListening(IP, port, handlerPool);
     }
 
-    public static bool StartListening(IPAddress IP, int port, int handlerPool)
+    public List<StateObject> GetStateObjects()
+    {
+      return Handlers;
+    }
+
+    bool StartListening(IPAddress IP, int port, int handlerPool)
     {
       IPEndPoint localEndPoint = new IPEndPoint(IP, port);
       Socket ListenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -43,6 +50,7 @@ namespace GameApp
           {
             keepListening = false;
           }
+          Application.DoEvents();
         }
       } catch (Exception e)
       {
