@@ -161,6 +161,48 @@ namespace GameApp
       return Encoding.UTF8.GetString(receiveBuffer, 0, bytesReceived);
     }
 
+    private Dictionary<string, string> GetStringsFromClients(string name, string move) {
+      Dictionary<string, string> playerMoves = new Dictionary<string, string>();
+      
+      return playerMoves;
+    }
+
+    private void DetermineVictor(Dictionary<string, string> players) {
+        List<string> names = new List<string>();
+        Dictionary<string, int> scores = new Dictionary<string, int>();
+        
+        for (int i = 0; i < players.Count; i++) {
+            names.Add(players.Keys.ElementAt(i));
+            scores.Add(players.Keys.ElementAt(i), 0);
+        }
+
+        for (int i = 0; i < players.Count; i++) {
+            if (players[names[i]] == "Rock" && players[names[i+1]] == "Scissors") {
+                scores[names[i]]++;
+            } else if (players[names[i+1]] == "Rock" && players[names[i]] == "Scissors") {
+                scores[names[i+1]]++;
+            }
+
+            if (players[names[i]] == "Scissors" && players[names[i+1]] == "Paper") {
+                scores[names[i]]++;
+            } else if (players[names[i=1]] == "Scissors" && players[names[i]] == "Paper") {
+                scores[names[i+1]]++;
+            }
+
+            if (players[names[i]] == "Paper" && players[names[i+1]] == "Rock") {
+                scores[names[i]]++;
+            } else if (players[names[i+1]] == "Paper" && players[names[i]] == "Rock") {
+                scores[names[i+1]]++;
+            }
+        }
+
+        for (int i = 0; i < players.Count; i++) {
+            if (scores[names[i]] > scores[names[i+1]] && scores[names[i]] > scores[names[i+2]]) {
+                LogBox.Text += "\nPlayer " + players.Keys.ElementAt(i) + " wins!";
+            }
+        }
+    }
+
     private void SendMove(int v)
     {
 
