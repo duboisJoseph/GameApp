@@ -20,6 +20,8 @@ namespace GameApp
 
     public bool sbChanged = false;
 
-    public string id = "?????";
+    public int id = -1;
+
+    public string name = "????";
   }
 }

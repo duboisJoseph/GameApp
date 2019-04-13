@@ -20,9 +20,6 @@ namespace GameApp
     public bool IAmHost { get; private set; }
 
     private Socket SocketConnectedToLobby;
-    private Socket ListenerSocket;
-    private IPEndPoint HostIPEndPoint;
-    private Socket PeerSocket1;
     private int playerCount;
     private string LobbyOwner;
     private string chosenMovement;
@@ -83,8 +80,21 @@ namespace GameApp
       StatusLbl.Text = playerCount + " connected players";
       */
       int i = 0;
+      foreach(StateObject s in ClientStates)
+      {
+        s.id = i;
+        i++;
+      }
 
       HostTransmitString(PlayerNameBox.Text);
+
+      HostReceiveString();
+
+      foreach (StateObject s in ClientStates)
+      {
+        s.name = s.sb.ToString();
+        LogBox.Text += "\n " + s.name + " connected...";
+      }
     }
 
     private void JoinLobby()
@@ -131,12 +141,8 @@ namespace GameApp
 
     private void TransmitString(Socket socket, string msg)
     {
-      //Console.WriteLine("Started to Transmit String");
-      //AsynchronousClient.Send(socket, msg);
-      //Console.WriteLine("Finished Transmitting String");
       byte[] sendBuffer = Encoding.UTF8.GetBytes(msg);
       int bytesSent = socket.Send(sendBuffer);
-      //return bytesSent;
     }
 
     private void HostTransmitString(string msg)
@@ -148,14 +154,16 @@ namespace GameApp
       }
     }
 
+    private void HostReceiveString()
+    {
+      foreach (StateObject s in ClientStates)
+      {
+        s.sb.Append(ReceiveString(s.workSocket));
+      }
+    }
+
     private string ReceiveString(Socket socket)
     {
-
-      //Console.WriteLine("Entered Receive String Function");
-      //AsynchronousClient a = new AsynchronousClient();
-      //Console.WriteLine("Stuck 5");
-      //return a.getResponse(socket);
-
       byte[] receiveBuffer = new byte[1024];
       int bytesReceived = socket.Receive(receiveBuffer);
       return Encoding.UTF8.GetString(receiveBuffer, 0, bytesReceived);
@@ -335,7 +343,7 @@ namespace GameApp
             //Send move to players:
             else
             {
-                TransmitString(PeerSocket1, PlayerNameBox.Text.ToString() + " " + chosenMovement);
+                //TransmitString(PeerSocket1, PlayerNameBox.Text.ToString() + " " + chosenMovement);
                 LogBox.Text += "\n " + "Move sent to all players.";
             }
 
