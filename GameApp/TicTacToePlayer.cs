@@ -25,6 +25,7 @@ namespace GameApp
     private Socket PeerSocket1;
     private int playerCount;
     private string LobbyOwner;
+    private string chosenMovement;
     private List<string> players = new List<string>();
 
     public TicTacToePlayer()
@@ -78,15 +79,12 @@ namespace GameApp
       {
         if (PeerSocket1.Poll(100, SelectMode.SelectRead))
         {
-          LogBox.Text += "\n FileRequest: " + ReceiveString(PeerSocket1);
-          playerCount++;
-          keepListening = false;
+          LogBox.Text += "\nReceived: " + ReceiveString(PeerSocket1);
+          //keepListening = false;
         }
         Application.DoEvents();
       } 
-      TransmitFile(PeerSocket1, @"C:\Users\joe\Desktop\Test1\", "Jabba.jpg");
               
-      LogBox.Text += "\n Completed all tests!";
     }
 
     private void JoinLobby()
@@ -104,19 +102,14 @@ namespace GameApp
       LobbyOwner = ReceiveString(SocketConnectedToLobby);
 
       LogBox.Text += "\n Joined " + LobbyOwner + "'s game.";
+
       StatusLbl.Text = "Connected";
 
       //Send player name
       int bytesSent = TransmitString(SocketConnectedToLobby, PlayerNameBox.Text);
 
-      TransmitString(SocketConnectedToLobby, "?fi");
-      LogBox.Text += "\n Transmitted FileRequest";
-
-      //bool keepWaitingForFile = true;
-      ReceiveFile(SocketConnectedToLobby, @"C:\Users\joe\Desktop\Test2\Jabba.jpg");
-     
-
-      LogBox.Text += "\n File recevied. Tests Complete!";
+      TransmitString(SocketConnectedToLobby, PlayerNameBox.Text.ToString() + " is now waiting.");
+      LogBox.Text += "\n Sucessfully joined the game.";
     }
 
     private int TransmitFile(Socket socket, string filePath, string fileName)
@@ -182,7 +175,7 @@ namespace GameApp
     private void SendMove(int v)
     {
 
-      string moveString = "I the pressed ";
+      string moveString = "You selected ";
       if (IAmHost)
       {
         //Store Move locally
@@ -225,16 +218,19 @@ namespace GameApp
           case 1:
             {
               moveString += "ROCK";
+              chosenMovement = "1";
               break;
             }
           case 2:
             {
               moveString += "PAPER";
+              chosenMovement = "2";
               break;
             }
           case 3:
             {
               moveString += "SCISSORS";
+              chosenMovement = "3";
               break;
             }
           default:
@@ -332,5 +328,25 @@ namespace GameApp
       IPBox_TextChanged(sender, e);
       PortBox_TextChanged(sender, e);
     }
-  }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            int bytesSent;
+            //Send move to host:
+            if (!IAmHost)
+            {
+                TransmitString(SocketConnectedToLobby, PlayerNameBox.Text.ToString() + " " + chosenMovement);
+                LogBox.Text += "\n " + "Move sent.";
+                button1.Enabled = false;
+
+            }
+            //Send move to players:
+            else
+            {
+
+                bytesSent = TransmitString(PeerSocket1, PlayerNameBox.Text.ToString() + " " + chosenMovement);
+            }
+
+        }
+    }
 }

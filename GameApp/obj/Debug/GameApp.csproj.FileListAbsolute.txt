@@ -1,0 +1,10 @@
+C:\Users\Staddlez\Desktop\GameApp-master\GameApp-master\GameApp\bin\Debug\GameApp.exe.config
+C:\Users\Staddlez\Desktop\GameApp-master\GameApp-master\GameApp\bin\Debug\GameApp.exe
+C:\Users\Staddlez\Desktop\GameApp-master\GameApp-master\GameApp\bin\Debug\GameApp.pdb
+C:\Users\Staddlez\Desktop\GameApp-master\GameApp-master\GameApp\obj\Debug\GameApp.csprojAssemblyReference.cache
+C:\Users\Staddlez\Desktop\GameApp-master\GameApp-master\GameApp\obj\Debug\GameApp.TicTacToePlayer.resources
+C:\Users\Staddlez\Desktop\GameApp-master\GameApp-master\GameApp\obj\Debug\GameApp.Properties.Resources.resources
+C:\Users\Staddlez\Desktop\GameApp-master\GameApp-master\GameApp\obj\Debug\GameApp.csproj.GenerateResource.cache
+C:\Users\Staddlez\Desktop\GameApp-master\GameApp-master\GameApp\obj\Debug\GameApp.csproj.CoreCompileInputs.cache
+C:\Users\Staddlez\Desktop\GameApp-master\GameApp-master\GameApp\obj\Debug\GameApp.exe
+C:\Users\Staddlez\Desktop\GameApp-master\GameApp-master\GameApp\obj\Debug\GameApp.pdb
