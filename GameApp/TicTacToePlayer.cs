@@ -31,6 +31,7 @@ namespace GameApp
     public TicTacToePlayer()
     {
       InitializeComponent();
+      InitializeTimer();
     }
 
     private void InitializeTimer()
@@ -57,14 +58,22 @@ namespace GameApp
         HostReceiveString();
         foreach (StateObject s in ClientStates)
         {
-          LogBox.Text += "\n " + s.name + " says " + s.sb.ToString(); ;
+          if (s.sbChanged)
+          {
+            LogBox.Text += "\n " + s.name + " says " + s.sb.ToString();
+            s.sbChanged = false;
+          }
         }
-        //Interpret Results
+        //Interpret Results as host
       } else
       {
         if (SocketConnectedToLobby.Poll(100, SelectMode.SelectRead))
         {
           LogBox.Text += "\nReceived: " + ReceiveString(SocketConnectedToLobby);
+          //Handle read string here
+          
+
+
         }
       }
     }
@@ -138,11 +147,29 @@ namespace GameApp
       }
     }
 
+    private bool HostCheckForRead(Socket client)
+    {
+      if (client.Poll(100, SelectMode.SelectRead))
+      {
+        return true;
+      }
+      return false;
+    }
+
     private void HostReceiveString()
     {
       foreach (StateObject s in ClientStates)
       {
-        s.sb.Append(ReceiveString(s.workSocket));
+        if (HostCheckForRead(s.workSocket)) {
+          s.sb.Append(ReceiveString(s.workSocket));
+          s.sbChanged = true;
+        } else
+        {
+          s.sbChanged = false;
+        }
+        
+        //Handle read string here
+           
       }
     }
 
