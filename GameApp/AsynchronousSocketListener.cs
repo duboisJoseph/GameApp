@@ -40,6 +40,7 @@ namespace GameApp
           allDone.Reset();
 
           //Start socket listening for connection
+    
           Console.WriteLine("Waiting for a connection...");
           ListenerSocket.BeginAccept( new AsyncCallback(AcceptCallback), ListenerSocket);
 

@@ -49,9 +49,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.LogBox = new System.Windows.Forms.RichTextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.playerOneLabel = new System.Windows.Forms.Label();
+            this.playerTwoLabel = new System.Windows.Forms.Label();
+            this.playerThreeLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // IPBox
@@ -258,41 +258,42 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // label2
+            // playerOneLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(522, 94);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(100, 13);
-            this.label2.TabIndex = 21;
-            this.label2.Text = "NOT CONNECTED";
+            this.playerOneLabel.AutoSize = true;
+            this.playerOneLabel.Location = new System.Drawing.Point(522, 94);
+            this.playerOneLabel.Name = "playerOneLabel";
+            this.playerOneLabel.Size = new System.Drawing.Size(100, 13);
+            this.playerOneLabel.TabIndex = 21;
+            this.playerOneLabel.Text = "NOT CONNECTED";
+            this.playerOneLabel.Click += new System.EventHandler(this.playerOneLabel_Click);
             // 
-            // label3
+            // playerTwoLabel
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(522, 121);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(100, 13);
-            this.label3.TabIndex = 22;
-            this.label3.Text = "NOT CONNECTED";
+            this.playerTwoLabel.AutoSize = true;
+            this.playerTwoLabel.Location = new System.Drawing.Point(522, 121);
+            this.playerTwoLabel.Name = "playerTwoLabel";
+            this.playerTwoLabel.Size = new System.Drawing.Size(100, 13);
+            this.playerTwoLabel.TabIndex = 22;
+            this.playerTwoLabel.Text = "NOT CONNECTED";
             // 
-            // label4
+            // playerThreeLabel
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(522, 148);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(100, 13);
-            this.label4.TabIndex = 23;
-            this.label4.Text = "NOT CONNECTED";
+            this.playerThreeLabel.AutoSize = true;
+            this.playerThreeLabel.Location = new System.Drawing.Point(522, 148);
+            this.playerThreeLabel.Name = "playerThreeLabel";
+            this.playerThreeLabel.Size = new System.Drawing.Size(100, 13);
+            this.playerThreeLabel.TabIndex = 23;
+            this.playerThreeLabel.Text = "NOT CONNECTED";
             // 
             // TicTacToePlayer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(708, 275);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.playerThreeLabel);
+            this.Controls.Add(this.playerTwoLabel);
+            this.Controls.Add(this.playerOneLabel);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.LogBox);
             this.Controls.Add(this.label1);
@@ -344,9 +345,9 @@
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.RichTextBox LogBox;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label playerOneLabel;
+        private System.Windows.Forms.Label playerTwoLabel;
+        private System.Windows.Forms.Label playerThreeLabel;
     }
 }
 

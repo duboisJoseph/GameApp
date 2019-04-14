@@ -32,12 +32,12 @@ namespace GameApp
         //Define IPendpoint
         IPEndPoint remoteEP = new IPEndPoint(IP, Port);
 
+
         //Create Socket
         Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
         connectDone.WaitOne();
-
         Console.WriteLine("Moved past ConnectDone");
         
         /*

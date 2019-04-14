@@ -20,7 +20,7 @@ namespace GameApp
     public bool IAmHost { get; private set; }
 
     private Socket SocketConnectedToLobby;
-    private int playerCount;
+    private int playerCount, totalReceived;
     private string LobbyOwner;
     private string chosenMovement;
     private List<string> players = new List<string>();
@@ -28,13 +28,19 @@ namespace GameApp
     private static StateObject HostState = new StateObject();
     private Timer MyTimer;
 
+    Boolean playerSet = false;      //set player names
+    int x = 0;
+    string[,] playerANDMovement = new String[3, 3];
+
+
     public TicTacToePlayer()
     {
       InitializeComponent();
       InitializeTimer();
     }
 
-    private void InitializeTimer()
+
+        private void InitializeTimer()
     {
       MyTimer = new Timer
       {
@@ -50,8 +56,6 @@ namespace GameApp
 
     private void MyTimer_tick(object Sender, EventArgs e) //Event handler for Timer ticks.
     {
-      bool endGame = false;
-
       //Here is where we read from the sockets and handle game logic
       if (IAmHost)
       {
@@ -60,30 +64,116 @@ namespace GameApp
         {
           if (s.sbChanged)
           {
-            LogBox.Text += "\n " + s.name + " says " + s.sb.ToString();
+            //LogBox.Text += "\n " + s.name + " says " + s.sb.ToString();
+            if (!playerSet)
+            {
+                LogBox.Text += "\n " + s.sb.ToString() + " : in-game.";
+                string[] tokens = s.sb.ToString().Split(' ');
+                
+                //Get movement
+                if(playerTwoLabel.Text.ToString() == tokens[0] && tokens[1] == "movement")
+                {
+                    playerANDMovement[1, 0] = playerTwoLabel.Text.ToString();
+                    playerANDMovement[1, 1] = tokens[3];
+                    PlyTwoScoreLbl.Text = playerANDMovement[1, 1];
+                    totalReceived++;
+                }
+                if (playerThreeLabel.Text.ToString() == tokens[0] && tokens[1] == "movement")
+                {
+                    playerANDMovement[2, 0] = playerThreeLabel.Text.ToString();
+                    playerANDMovement[2, 1] = tokens[3];
+                    PlyThreeScoreLbl.Text = playerANDMovement[2, 1];
+                    totalReceived++;
+                }
+                
+            }
+            x++;
             s.sbChanged = false;
-          }
+            if (x == 1 && !playerSet)
+            {
+                playerTwoLabel.Text = s.sb.ToString();
+                HostTransmitString(s.sb.ToString() + " is player two.\n ");
+            }
+            else if (x == 2 && !playerSet)
+            {
+                playerThreeLabel.Text = s.sb.ToString();
+                HostTransmitString(s.sb.ToString() + " is player three.\n ");
+            }
+         }
+
         }
-        //Interpret Results as host
-      } else
+            //IF ALL MOVEMENT HAS BEEN RECEIVED, SEND TO ALL PLAYERS:
+            if (totalReceived == playerCount + 1)
+            {
+                HostTransmitString("ALL " + playerANDMovement[0, 0] + " " + playerANDMovement[0, 1] + " " + playerANDMovement[1, 0] + " " + playerANDMovement[1, 1] + " " + playerANDMovement[2, 0] + " " + playerANDMovement[2, 1]);
+                totalReceived = 0;
+
+                //ALEC ALLAIN DO YOUR DETERMINE VICTOR HERE FOR THE HOST OF THE GAME. THEN SEND RESULT OUT TO PLAYERS OR YOU CAN HAVE EACH INDIVIDUAL CLIENT DETERMINE WHO WON. UP TO YOU <-----------------------
+            }
+       }
+    else
       {
+        //NEW MESSAGES COMING IN FOR THE CLIENT:
         if (SocketConnectedToLobby.Poll(100, SelectMode.SelectRead))
         {
-          LogBox.Text += "\nReceived: " + ReceiveString(SocketConnectedToLobby);
-          //Handle read string here
-          
+          String newlyReceived = "\n " + ReceiveString(SocketConnectedToLobby);
+          LogBox.Text += newlyReceived;
+          string[] tokens = newlyReceived.Split(' ');
+                    //Handle read string here as the client!
 
+            //Update Names of Players in box if we haven't updated it:
+            if (!playerSet)
+            {
+                if (newlyReceived.Contains("two"))
+                {
+                    playerTwoLabel.Text = tokens[1];
+                }
+                if (newlyReceived.Contains("three"))
+                {
+                    playerThreeLabel.Text = tokens[5];
+                }
+            }
 
-        }
+            //players now set
+            playerSet = true;
+
+                    if (newlyReceived.Contains("ALL")) ;
+                    {
+                        //GET ALL THE PLAYER MOVEMENTS FOR THE CLIENT:
+                        if (tokens[1] == "ALL")
+                        {
+                            playerANDMovement[0, 0] = tokens[2];
+                            playerANDMovement[0, 1] = tokens[3];
+                            if (playerOneLabel.Text.ToString() == tokens[2])
+                            {
+                                PlyOneScoreLbl.Text = playerANDMovement[0, 1];
+                            }
+
+                            playerANDMovement[1, 0] = tokens[4];
+                            playerANDMovement[1, 1] = tokens[5];
+                            if (playerTwoLabel.Text.ToString() == tokens[4])
+                            {
+                                PlyTwoScoreLbl.Text = playerANDMovement[1, 1];
+                            }
+
+                            playerANDMovement[2, 0] = tokens[6];
+                            playerANDMovement[2, 1] = tokens[7];
+                            PlyThreeScoreLbl.Text = playerANDMovement[2, 1];
+
+                        }
+                    }
+
+         }
       }
     }
-
+   
     private void HostLobby()
     {
       playerCount = 2; //NOTE THIS Defines the number of users you need to start game;
+      playerOneLabel.Text = PlayerNameBox.Text.ToString();
 
 
-      Console.WriteLine("Started");
+            Console.WriteLine("New Lobby Started");
       AsynchronousSocketListener ASL = new AsynchronousSocketListener(IPAddress.Parse(IPBox.Text), int.Parse(PortBox.Text), playerCount);
 
       Console.WriteLine("Moved Here 1");
@@ -100,7 +190,7 @@ namespace GameApp
       }
 
       HostTransmitString(PlayerNameBox.Text);
-
+           
       HostReceiveString();
 
       foreach (StateObject s in ClientStates)
@@ -124,6 +214,7 @@ namespace GameApp
       LogBox.Text += "\n Joined " + LobbyOwner + "'s game.";
 
       StatusLbl.Text = "Connected";
+      playerOneLabel.Text = LobbyOwner;
 
       //Send player name
       TransmitString(SocketConnectedToLobby, PlayerNameBox.Text);
@@ -168,8 +259,8 @@ namespace GameApp
           s.sbChanged = false;
         }
         
-        //Handle read string here
-           
+        //Handle read strings here.
+ 
       }
     }
 
@@ -384,11 +475,10 @@ namespace GameApp
 
     private void button1_Click(object sender, EventArgs e)
     {
-      int bytesSent;
       //Send move to host:
       if (!IAmHost)
       {
-        TransmitString(SocketConnectedToLobby, PlayerNameBox.Text.ToString() + " " + chosenMovement);
+        TransmitString(SocketConnectedToLobby, " movement is " + chosenMovement);
         LogBox.Text += "\n " + "Move sent.";
         button1.Enabled = false;
 
@@ -396,9 +486,18 @@ namespace GameApp
       //Send move to players:
       else
       {
-        //TransmitString(PeerSocket1, PlayerNameBox.Text.ToString() + " " + chosenMovement);
+        HostTransmitString(playerOneLabel.Text + " movement is " + chosenMovement);
+        playerANDMovement[0,0] = playerOneLabel.Text.ToString();
+        playerANDMovement[0, 1] = chosenMovement;
+        PlyOneScoreLbl.Text = playerANDMovement[0, 1];                  //LABEL FOR TESTING
+        totalReceived++;
         LogBox.Text += "\n " + "Move sent to all players.";
       }
     }
-  }
+
+        private void playerOneLabel_Click(object sender, EventArgs e)
+        {
+            
+        }
+    }
 }
