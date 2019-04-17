@@ -109,6 +109,7 @@ namespace GameApp
                     totalReceived = 0;
 
                     //ALEC ALLAIN DO YOUR DETERMINE VICTOR HERE FOR THE HOST OF THE GAME. THEN SEND RESULT OUT TO PLAYERS OR YOU CAN HAVE EACH INDIVIDUAL CLIENT DETERMINE WHO WON. UP TO YOU <-----------------------
+                    //DetermineVictor(playerANDMovement);
                 }
             }
             else
@@ -293,54 +294,68 @@ namespace GameApp
             return playerMoves;
         }
 
-        private void DetermineVictor(Dictionary<string, string> players)
-        {
-            List<string> names = new List<string>();
-            Dictionary<string, int> scores = new Dictionary<string, int>();
+        private void DetermineVictor(string[,] players) {
+           int score;
+           int playerOne;
+           int playerTwo;
+           int playerThree;
+            
+            for (int i = 0; i < players.GetUpperBound(0); i++) {
+                for (int j = i + 1; j < players.GetUpperBound(0); i++) {
+                    if (players[i,1] == "Rock" && players[j,1] == "Scissors") {
+                        Console.WriteLine("\n" + players[i,0] + " wins over " + players[j,0]);
+                        score = int.Parse(players[i,2]);
+                        score++;
+                        players[i,2] = score.ToString;
+                    } else if (players[j,1] == "Rock" && players[i,1] == "Scissors") {
+                        Console.WriteLine("\n" + players[j,0] + " wins over " + players[i,0]);
+                        score = int.Parse(players[j,2]);
+                        score++;
+                        players[j,2] = score.ToString;
+                    }
 
-            for (int i = 0; i < players.Count; i++)
-            {
-                names.Add(players.Keys.ElementAt(i));
-                scores.Add(players.Keys.ElementAt(i), 0);
+                    if (players[i,1] == "Scissors" && players[j,1] == "Paper") {
+                        Console.WrtieLine("\n" + players[i,0] + " wins over " + players[j,0]);
+                        score = int.Parse(players[i,2]);
+                        score++;
+                        players[i,2] = score.ToString;
+                    } else if (players[j,1] == "Rock" && players[i,1] == "Scissors") {
+                        Console.WriteLine("\n" + players[j,0] + " wins over " + players[i,0]);
+                        score = int.Parse(players[j,2]);
+                        score++;
+                        players[j,2] = score.ToString;
+                    }
+
+                    if (players[i,1] == "Paper" && players[j,1] == "Rock") {
+                        Console.WrtieLine("\n" + players[i,0] + " wins over " + players[j,0]);
+                        score = int.Parse(players[i,2]);
+                        score++;
+                        players[i,2] = score.ToString;
+                    } else if (players[i,1] == "Paper" && players[j,1] == "Rock") {
+                        Console.WriteLine("\n" + players[j,0] + " wins over " + players[i,0]);
+                        score = int.Parse(players[j,2]);
+                        score++;
+                        players[j,2] = score.ToString;
+                    }
+                }
             }
 
-            for (int i = 0; i < players.Count; i++)
-            {
-                if (players[names[i]] == "Rock" && players[names[i + 1]] == "Scissors")
-                {
-                    scores[names[i]]++;
-                }
-                else if (players[names[i + 1]] == "Rock" && players[names[i]] == "Scissors")
-                {
-                    scores[names[i + 1]]++;
-                }
+            playerOne = int.Parse(players[0,2]);
+            playerTwo = int.Parse(players[1,2]);
+            playerThree = int.Parse(players[2,2]);
 
-                if (players[names[i]] == "Scissors" && players[names[i + 1]] == "Paper")
-                {
-                    scores[names[i]]++;
-                }
-                else if (players[names[i = 1]] == "Scissors" && players[names[i]] == "Paper")
-                {
-                    scores[names[i + 1]]++;
-                }
-
-                if (players[names[i]] == "Paper" && players[names[i + 1]] == "Rock")
-                {
-                    scores[names[i]]++;
-                }
-                else if (players[names[i + 1]] == "Paper" && players[names[i]] == "Rock")
-                {
-                    scores[names[i + 1]]++;
-                }
+            if (playerOne > playerTwo && playerOne > playerThree) {
+                Console.WriteLine(players[0,0] + " wins this game!");
+                LogBox.Text = "\n" + players[0,0] + " wins this game!";
+            } else if (playerTwo > playerOne && playerTwo > playerThree) {
+                Console.WriteLine(players[1,0] + " wins this game!");
+                LogBox.Text = "\n" + players[1,0] + " wins this game!";
+            } else if (playerThree > playerOne && playerThree > playerTwo) {
+                Console.WriteLine(players[2,0] + " wins this game!");
+                LogBox.Text = "\n" + players[2,0] + " wins this game!";
             }
-
-            for (int i = 0; i < players.Count; i++)
-            {
-                if (scores[names[i]] > scores[names[i + 1]] && scores[names[i]] > scores[names[i + 2]])
-                {
-                    LogBox.Text += "\nPlayer " + players.Keys.ElementAt(i) + " wins!";
-                }
-            }
+            
+            //roundOver = true;
         }
 
         private void SendMove(int v)

@@ -18,3 +18,13 @@ C:\Users\joe\source\repos\GameApp\GameApp\obj\Debug\GameApp.csproj.GenerateResou
 C:\Users\joe\source\repos\GameApp\GameApp\obj\Debug\GameApp.csproj.CoreCompileInputs.cache
 C:\Users\joe\source\repos\GameApp\GameApp\obj\Debug\GameApp.exe
 C:\Users\joe\source\repos\GameApp\GameApp\obj\Debug\GameApp.pdb
+\\blade9\profiles$\allainal\Desktop\GameApp\GameApp\obj\Debug\GameApp.csprojAssemblyReference.cache
+\\blade9\profiles$\allainal\Desktop\GameApp\GameApp\obj\Debug\GameApp.TicTacToePlayer.resources
+\\blade9\profiles$\allainal\Desktop\GameApp\GameApp\obj\Debug\GameApp.Properties.Resources.resources
+\\blade9\profiles$\allainal\Desktop\GameApp\GameApp\obj\Debug\GameApp.csproj.GenerateResource.cache
+\\blade9\profiles$\allainal\Desktop\GameApp\GameApp\obj\Debug\GameApp.csproj.CoreCompileInputs.cache
+\\blade9\profiles$\allainal\Desktop\GameApp\GameApp\obj\Debug\GameApp.exe
+\\blade9\profiles$\allainal\Desktop\GameApp\GameApp\obj\Debug\GameApp.pdb
+\\blade9\profiles$\allainal\Desktop\GameApp\GameApp\bin\Debug\GameApp.exe.config
+\\blade9\profiles$\allainal\Desktop\GameApp\GameApp\bin\Debug\GameApp.exe
+\\blade9\profiles$\allainal\Desktop\GameApp\GameApp\bin\Debug\GameApp.pdb
