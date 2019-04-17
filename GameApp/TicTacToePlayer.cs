@@ -109,7 +109,7 @@ namespace GameApp
           totalReceived = 0;
 
           //ALEC ALLAIN DO YOUR DETERMINE VICTOR HERE FOR THE HOST OF THE GAME. THEN SEND RESULT OUT TO PLAYERS OR YOU CAN HAVE EACH INDIVIDUAL CLIENT DETERMINE WHO WON. UP TO YOU <-----------------------
-          //DetermineVictor(playerANDMovement);
+          DetermineVictor(playerANDMovement);
         }
       }
       else
@@ -165,7 +165,7 @@ namespace GameApp
           }
           else if (newlyReceived.Contains("RESET"))
           {
-            resetGame();
+            ResetGame();
           }
 
         }
@@ -301,7 +301,7 @@ namespace GameApp
       int playerThree;
             
       for (int i = 0; i < players.GetUpperBound(0); i++) {
-        for (int j = i + 1; j < players.GetUpperBound(0); i++) {
+        for (int j = i + 1; j < players.GetUpperBound(0); j++) {
           if (players[i,1] == "Rock" && players[j,1] == "Scissors") {
             Console.WriteLine("\n" + players[i,0] + " wins over " + players[j,0]);
             score = int.Parse(players[i,2]);
@@ -330,30 +330,30 @@ namespace GameApp
             Console.WriteLine("\n" + players[i,0] + " wins over " + players[j,0]);
             score = int.Parse(players[i,2]);
             score++;
-              players[i,2] = score.ToString();
+            players[i,2] = score.ToString();
           } else if (players[i,1] == "Paper" && players[j,1] == "Rock") {
             Console.WriteLine("\n" + players[j,0] + " wins over " + players[i,0]);
             score = int.Parse(players[j,2]);
             score++;
             players[j,2] = score.ToString();
           }
-          }
         }
+      }
 
-        playerOne = int.Parse(players[0,2]);
-        playerTwo = int.Parse(players[1,2]);
-        playerThree = int.Parse(players[2,2]);
+      playerOne = int.Parse(players[0,2]);
+      playerTwo = int.Parse(players[1,2]);
+      playerThree = int.Parse(players[2,2]);
 
-        if (playerOne > playerTwo && playerOne > playerThree) {
-            Console.WriteLine(players[0,0] + " wins this game!");
-            LogBox.Text = "\n" + players[0,0] + " wins this game!";
-        } else if (playerTwo > playerOne && playerTwo > playerThree) {
-            Console.WriteLine(players[1,0] + " wins this game!");
-            LogBox.Text = "\n" + players[1,0] + " wins this game!";
-        } else if (playerThree > playerOne && playerThree > playerTwo) {
-            Console.WriteLine(players[2,0] + " wins this game!");
-            LogBox.Text = "\n" + players[2,0] + " wins this game!";
-        }
+      if (playerOne > playerTwo && playerOne > playerThree) {
+        Console.WriteLine(players[0,0] + " wins this game!");
+        LogBox.Text = "\n" + players[0,0] + " wins this game!";
+      } else if (playerTwo > playerOne && playerTwo > playerThree) {
+        Console.WriteLine(players[1,0] + " wins this game!");
+        LogBox.Text = "\n" + players[1,0] + " wins this game!";
+      } else if (playerThree > playerOne && playerThree > playerTwo) {
+        Console.WriteLine(players[2,0] + " wins this game!");
+        LogBox.Text = "\n" + players[2,0] + " wins this game!";
+      }
             
         //roundOver = true;
     }
@@ -361,78 +361,78 @@ namespace GameApp
     private void SendMove(int v)
     {
 
-        string moveString = "You selected ";
-        if (IAmHost)
+      string moveString = "You selected ";
+      if (IAmHost)
+      {
+        //Store Move locally
+        switch (v)
         {
-            //Store Move locally
-            switch (v)
-            {
-                case 1:
-                    {
-                        moveString += "ROCK";
-                        chosenMovement = "1";
-                        break;
-                    }
-                case 2:
-                    {
-                        moveString += "PAPER";
-                        chosenMovement = "2";
-                        break;
-                    }
-                case 3:
-                    {
-                        moveString += "SCISSORS";
-                        chosenMovement = "3";
-                        break;
-                    }
-                default:
-                    {
-                        break;
-                    }
-            }
-            LogBox.Text += "\n " + moveString;
-            //Wait for player moves
-
-            //Get Player moves
-
-            //Calculate Victor
-
-            //Send Results to players
+          case 1:
+              {
+                  moveString += "ROCK";
+                  chosenMovement = "1";
+                  break;
+              }
+          case 2:
+              {
+                  moveString += "PAPER";
+                  chosenMovement = "2";
+                  break;
+              }
+          case 3:
+              {
+                  moveString += "SCISSORS";
+                  chosenMovement = "3";
+                  break;
+              }
+          default:
+              {
+                  break;
+              }
         }
-        else
+        LogBox.Text += "\n " + moveString;
+        //Wait for player moves
+
+        //Get Player moves
+
+        //Calculate Victor
+
+        //Send Results to players
+      }
+      else
+      {
+        //Craft Move String
+        switch (v)
         {
-            //Craft Move String
-            switch (v)
-            {
-                case 1:
-                    {
-                        moveString += "ROCK";
-                        chosenMovement = "1";
-                        break;
-                    }
-                case 2:
-                    {
-                        moveString += "PAPER";
-                        chosenMovement = "2";
-                        break;
-                    }
-                case 3:
-                    {
-                        moveString += "SCISSORS";
-                        chosenMovement = "3";
-                        break;
-                    }
-                default:
-                    {
-                        break;
-                    }
-            }
-            LogBox.Text += "\n " + moveString;
-
-            //Send Move
-
-            //Recive Ack
+          case 1:
+              {
+                  moveString += "ROCK";
+                  chosenMovement = "1";
+                  break;
+              }
+          case 2:
+              {
+                  moveString += "PAPER";
+                  chosenMovement = "2";
+                  break;
+              }
+          case 3:
+              {
+                  moveString += "SCISSORS";
+                  chosenMovement = "3";
+                  break;
+              }
+          default:
+              {
+                  break;
+              }
         }
+        LogBox.Text += "\n " + moveString;
+
+        //Send Move
+
+        //Recive Ack
+      }
     }
 
     private bool ValidateIP(string text)
@@ -463,55 +463,55 @@ namespace GameApp
 
     private void ScissorsBtn_Click(object sender, EventArgs e)
     {
-        SendMove(3);
+       SendMove(3);
     }
 
     private void HostBtn_Click(object sender, EventArgs e)
     {
-        LogBox.Text += "\n Hosting Lobby....";
-        HostLobby();
+      LogBox.Text += "\n Hosting Lobby....";
+      HostLobby();
     }
 
     private void JoinBtn_Click(object sender, EventArgs e)
     {
-        LogBox.Text += "\n Joining Lobby....";
-        JoinLobby();
+      LogBox.Text += "\n Joining Lobby....";
+      JoinLobby();
     }
 
     private void IPBox_TextChanged(object sender, EventArgs e)
     {
-        if (ValidateIP(IPBox.Text))
-        {
-            IpValidated = true;
-        }
-        else
-        {
-            IpValidated = false;
-        }
+      if (ValidateIP(IPBox.Text))
+      {
+         IpValidated = true;
+      }
+      else
+      {
+         IpValidated = false;
+      }
 
-        if (IpValidated && PortValidated)
-        {
-            HostBtn.Enabled = true;
-            JoinBtn.Enabled = true;
-        }
+      if (IpValidated && PortValidated)
+      {
+        HostBtn.Enabled = true;
+        JoinBtn.Enabled = true;
+      }
     }
 
     private void PortBox_TextChanged(object sender, EventArgs e)
     {
-        if (ValidatePort(PortBox.Text))
-        {
-            PortValidated = true;
-        }
-        else
-        {
-            PortValidated = false;
-        }
+      if (ValidatePort(PortBox.Text))
+      {
+        PortValidated = true;
+      }
+      else
+      {
+        PortValidated = false;
+      }
 
-        if (IpValidated && PortValidated)
-        {
-            HostBtn.Enabled = true;
-            JoinBtn.Enabled = true;
-        }
+      if (IpValidated && PortValidated)
+      {
+        HostBtn.Enabled = true;
+        JoinBtn.Enabled = true;
+      }
     }
 
     private void PlayerNameBox_TextChanged(object sender, EventArgs e)
@@ -520,67 +520,67 @@ namespace GameApp
         PortBox_TextChanged(sender, e);
     }
 
-    private void button1_Click(object sender, EventArgs e)
+    private void Button1_Click(object sender, EventArgs e)
     {
-        //Send move to host:
-        if (!IAmHost)
-        {
-            TransmitString(SocketConnectedToLobby, " movement is " + chosenMovement);
-            LogBox.Text += "\n " + "Move sent.";
-            button1.Enabled = false;
+      //Send move to host:
+      if (!IAmHost)
+      {
+          TransmitString(SocketConnectedToLobby, " movement is " + chosenMovement);
+          LogBox.Text += "\n " + "Move sent.";
+          SendMoveBtn.Enabled = false;
 
+      }
+      //Send move to players:
+      else
+      {
+        if (!roundOver)
+        {
+            HostTransmitString(playerOneLabel.Text + " movement is " + chosenMovement);
+            playerANDMovement[0, 0] = playerOneLabel.Text.ToString();
+            playerANDMovement[0, 1] = chosenMovement;
+            PlyOneScoreLbl.Text = playerANDMovement[0, 1];                  //LABEL FOR TESTING
+            totalReceived++;
+            LogBox.Text += "\n " + "Move sent to all players.";
+            SendMoveBtn.Text = "New Game";
+            roundOver = true;
         }
-        //Send move to players:
         else
         {
-            if (!roundOver)
-            {
-                HostTransmitString(playerOneLabel.Text + " movement is " + chosenMovement);
-                playerANDMovement[0, 0] = playerOneLabel.Text.ToString();
-                playerANDMovement[0, 1] = chosenMovement;
-                PlyOneScoreLbl.Text = playerANDMovement[0, 1];                  //LABEL FOR TESTING
-                totalReceived++;
-                LogBox.Text += "\n " + "Move sent to all players.";
-                button1.Text = "New Game";
-                roundOver = true;
-            }
-            else
-            {
-                button1.Text = "Send Move";
-                LogBox.Text += "\nreset";
-                resetGame();
-                HostTransmitString("RESET");
-                roundOver = false;
-            }
+            SendMoveBtn.Text = "Send Move";
+            LogBox.Text += "\nreset";
+            ResetGame();
+            HostTransmitString("RESET");
+            roundOver = false;
         }
+      }
     }
 
     /**
       * Method for reseting game once a victor has been determined.
       * */
-    private void resetGame()
+    private void ResetGame()
     {
-        PlyOneScoreLbl.Text = "...";
-        PlyTwoScoreLbl.Text = "...";
-        PlyThreeScoreLbl.Text = "...";
-        chosenMovement = "";
+      PlyOneScoreLbl.Text = "...";
+      PlyTwoScoreLbl.Text = "...";
+      PlyThreeScoreLbl.Text = "...";
+      chosenMovement = "";
 
-        for (int i = 0; i < 3; i++)
-        {
-            playerANDMovement[i, 1] = "";
-        }
+      for (int i = 0; i < 3; i++)
+      {
+         playerANDMovement[i, 1] = "";
+      }
 
-        if (IAmHost)
+      if (IAmHost)
+      {
+        foreach (StateObject s in ClientStates)
         {
-            foreach (StateObject s in ClientStates)
-            {
-                s.sb.Remove(1, s.sb.Length - 1);
-            }
+           s.sb.Remove(1, s.sb.Length - 1);
         }
-        else
-        {
-            button1.Enabled = true;
-        }
+      }
+      else
+      {
+        SendMoveBtn.Enabled = true;
+      }
     }
 
     private void playerOneLabel_Click(object sender, EventArgs e)
