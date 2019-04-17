@@ -75,14 +75,14 @@ namespace GameApp
                             {
                                 playerANDMovement[1, 0] = playerTwoLabel.Text.ToString();
                                 playerANDMovement[1, 1] = tokens[3];
-                                PlyTwoScoreLbl.Text = playerANDMovement[1, 1];
+                                //PlyTwoScoreLbl.Text = playerANDMovement[1, 1];
                                 totalReceived++;
                             }
                             if (playerThreeLabel.Text.ToString() == tokens[0] && tokens[1] == "movement")
                             {
                                 playerANDMovement[2, 0] = playerThreeLabel.Text.ToString();
                                 playerANDMovement[2, 1] = tokens[3];
-                                PlyThreeScoreLbl.Text = playerANDMovement[2, 1];
+                                //PlyThreeScoreLbl.Text = playerANDMovement[2, 1];
                                 totalReceived++;
                             }
 
@@ -107,7 +107,10 @@ namespace GameApp
                 {
                     HostTransmitString("ALL " + playerANDMovement[0, 0] + " " + playerANDMovement[0, 1] + " " + playerANDMovement[1, 0] + " " + playerANDMovement[1, 1] + " " + playerANDMovement[2, 0] + " " + playerANDMovement[2, 1]);
                     totalReceived = 0;
-
+                    SendMoveBtn.Enabled = true;
+                    PlyOneScoreLbl.Text = labelParse(playerANDMovement[0, 1]);
+                    PlyTwoScoreLbl.Text = labelParse(playerANDMovement[1, 1]);
+                    PlyThreeScoreLbl.Text = labelParse(playerANDMovement[2, 1]);
                     //ALEC ALLAIN DO YOUR DETERMINE VICTOR HERE FOR THE HOST OF THE GAME. THEN SEND RESULT OUT TO PLAYERS OR YOU CAN HAVE EACH INDIVIDUAL CLIENT DETERMINE WHO WON. UP TO YOU <-----------------------
                     DetermineVictor(playerANDMovement);
                 }
@@ -147,19 +150,19 @@ namespace GameApp
                         playerANDMovement[0, 1] = tokens[3];
                         if (playerOneLabel.Text.ToString() == tokens[2])
                         {
-                            PlyOneScoreLbl.Text = playerANDMovement[0, 1];
+                            PlyOneScoreLbl.Text = labelParse(playerANDMovement[0, 1]);
                         }
 
                         playerANDMovement[1, 0] = tokens[4];
                         playerANDMovement[1, 1] = tokens[5];
                         if (playerTwoLabel.Text.ToString() == tokens[4])
                         {
-                            PlyTwoScoreLbl.Text = playerANDMovement[1, 1];
+                            PlyTwoScoreLbl.Text = labelParse(playerANDMovement[1, 1]);
                         }
 
                         playerANDMovement[2, 0] = tokens[6];
                         playerANDMovement[2, 1] = tokens[7];
-                        PlyThreeScoreLbl.Text = playerANDMovement[2, 1];
+                        PlyThreeScoreLbl.Text = labelParse(playerANDMovement[2, 1]);
 
                         //}
                     }
@@ -529,12 +532,22 @@ namespace GameApp
         {
             LogBox.Text = "Hosting Lobby....\n" + LogBox.Text;
             HostLobby();
+            HostBtn.Enabled = false;
+            JoinBtn.Enabled = false;
+            IPBox.Enabled = false;
+            PortBox.Enabled = false;
+            PlayerNameBox.Enabled = false;
         }
 
         private void JoinBtn_Click(object sender, EventArgs e)
         {
             LogBox.Text = "Joining Lobby....\n" + LogBox.Text;
             JoinLobby();
+            HostBtn.Enabled = false;
+            JoinBtn.Enabled = false;
+            IPBox.Enabled = false;
+            PortBox.Enabled = false;
+            PlayerNameBox.Enabled = false;
         }
 
         private void IPBox_TextChanged(object sender, EventArgs e)
@@ -587,6 +600,9 @@ namespace GameApp
                 TransmitString(SocketConnectedToLobby, " movement is " + chosenMovement);
                 LogBox.Text = "Move sent.\n" + LogBox.Text;
                 SendMoveBtn.Enabled = false;
+                RockBtn.Enabled = false;
+                PaperBtn.Enabled = false;
+                ScissorsBtn.Enabled = false;
 
             }
             //Send move to players:
@@ -597,11 +613,15 @@ namespace GameApp
                     HostTransmitString(playerOneLabel.Text + " movement is " + chosenMovement);
                     playerANDMovement[0, 0] = playerOneLabel.Text.ToString();
                     playerANDMovement[0, 1] = chosenMovement;
-                    PlyOneScoreLbl.Text = playerANDMovement[0, 1];                  //LABEL FOR TESTING
+                    //PlyOneScoreLbl.Text = labelParse(playerANDMovement[0, 1]);                  //LABEL FOR TESTING
                     totalReceived++;
                     LogBox.Text = "Move sent to all players.\n" + LogBox.Text;
                     SendMoveBtn.Text = "New Game";
                     roundOver = true;
+                    SendMoveBtn.Enabled = false;
+                    RockBtn.Enabled = false;
+                    PaperBtn.Enabled = false;
+                    ScissorsBtn.Enabled = false;
                 }
                 else
                 {
@@ -644,6 +664,33 @@ namespace GameApp
             {
                 SendMoveBtn.Enabled = true;
             }
+
+            //Re-enables roshambo buttons
+            RockBtn.Enabled = true;
+            PaperBtn.Enabled = true;
+            ScissorsBtn.Enabled = true;
+        }
+
+        /*
+         * Method for parsing move label strings.
+         * */
+         private string labelParse(string i)
+        {
+            string s = "...";
+            if (i == "1")
+            {
+                s = "Rock";
+            }
+            else if (i == "2")
+            {
+                s = "Paper";
+            }
+            else if (i == "3")
+            {
+                s = "Scissors";
+            }
+
+            return s;
         }
 
         private void playerOneLabel_Click(object sender, EventArgs e)
