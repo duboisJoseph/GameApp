@@ -289,14 +289,18 @@ namespace GameApp
 
     private void DetermineVictor(string[,] players) {
       
-      int playerOne;
-      int playerTwo;
-      int playerThree;
-            
+      int playerOne = 0;
+      int playerTwo = 0;
+      int playerThree = 0;
+      for (int i = 0; i < players.GetUpperBound(0) + 1; i++)
+      {
+        players[i, 2] = "0"; //Needs to be initalized
+      }
+
       for (int i = 0; i < players.GetUpperBound(0)+1; i++) {
         for (int j = i + 1; j < players.GetUpperBound(0)+1; j++) {
           int score = 0;
-         
+          Console.WriteLine("players[i,1]:" + players[i, 1] + "<players[j,1]:" + players[j, 1]+"<");
           if (players[i,1] == "1" && players[j,1] == "3") {
             Console.WriteLine("\n" + players[i,0] + " wins over " + players[j,0]);
             score += int.Parse(players[i,2]);
@@ -571,9 +575,10 @@ namespace GameApp
       PlyThreeScoreLbl.Text = "...";
       chosenMovement = "";
 
-      for (int i = 0; i < 3; i++)
+      for (int i = 0; i < playerANDMovement.GetUpperBound(0)+1; i++)
       {
          playerANDMovement[i, 1] = "";
+         playerANDMovement[i, 2] = "0";
       }
 
       if (IAmHost)
