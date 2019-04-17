@@ -325,52 +325,88 @@ namespace GameApp
                 playerScore[i] = 0;
             }
 
+            //Compare Host's choice to first client's.
             if (compareChoice(players[0, 1], players[1, 1]))
             {
                 playerScore[0]++;
             }
 
+            //Compares Host's choice to second client's.
             if (compareChoice(players[0, 1], players[2, 1]))
             {
                 playerScore[0]++;
             }
 
+            //Compares first client's choice to second client's.
             if (compareChoice(players[1, 1], players[2, 1]))
             {
                 playerScore[1]++;
             }
 
+            //Compares first client's choice to host's.
             if (compareChoice(players[1, 1], players[0, 1]))
             {
                 playerScore[1]++;
             }
 
+            //Compares second client's choice to first client's.
             if (compareChoice(players[2, 1], players[1, 1]))
             {
                 playerScore[2]++;
             }
 
+            //Compares second client's choice to host's.
             if (compareChoice(players[2, 1], players[0, 1]))
             {
                 playerScore[2]++;
             }
 
+            //Writes score to console.
             Console.WriteLine("p1: " + playerScore[0] + " p2: " + playerScore[1] + " p3: " + playerScore[2]);
 
+            //Determines the victor and prints to console and logbox.
+
+            //Host Wins.
             if (playerScore[0] > playerScore[1] && playerScore[0] > playerScore[2])
             {
                 Console.WriteLine(players[0, 0] + " wins this game!");
                 LogBox.Text = players[0, 0] + " wins this game!" + "\n" + LogBox.Text;
             }
+            //First Client Wins.
             else if (playerScore[1] > playerScore[0] && playerScore[1] > playerScore[2])
             {
                 Console.WriteLine(players[1, 0] + " wins this game!");
                 LogBox.Text = players[1, 0] + " wins this game!" + "\n" + LogBox.Text;
             }
+            //Second Client wins.
             else if (playerScore[2] > playerScore[0] && playerScore[2] > playerScore[1])
             {
                 Console.WriteLine(players[2, 0] + " wins this game!");
                 LogBox.Text = players[2, 0] + " wins this game!" + "\n" + LogBox.Text;
+            }
+            //Host and First Client tie.
+            else if (playerScore[0] == playerScore[1] && playerScore[0] > playerScore[2])
+            {
+                Console.WriteLine(players[0, 0] +" and " + players[1,0] + "tied.");
+                LogBox.Text = players[0, 0] + " and " + players[1, 0] + "tied.\n" + LogBox.Text;
+            }
+            //Host and Second Client tie.
+            else if (playerScore[0] == playerScore[2] && playerScore[0] > playerScore[1])
+            {
+                Console.WriteLine(players[0, 0] + " and " + players[2, 0] + "tied.");
+                LogBox.Text = players[0, 0] + " and " + players[2, 0] + "tied.\n" + LogBox.Text;
+            }
+            //First and Second Client tie.
+            else if (playerScore[1] == playerScore[2] && playerScore[1] > playerScore[0])
+            {
+                Console.WriteLine(players[1, 0] + " and " + players[2, 0] + "tied.");
+                LogBox.Text = players[1, 0] + " and " + players[2, 0] + "tied.\n" + LogBox.Text;
+            }
+            //Three way tie.
+            else
+            {
+                Console.WriteLine("Three Way Tie!");
+                LogBox.Text = "Three Way Tie!\n" + LogBox.Text;
             }
 
             //roundOver = true;
