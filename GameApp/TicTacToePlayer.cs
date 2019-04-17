@@ -287,55 +287,58 @@ namespace GameApp
       return Encoding.UTF8.GetString(receiveBuffer, 0, bytesReceived);
     }
 
-    private Dictionary<string, string> GetStringsFromClients(string name, string move)
-    {
-      Dictionary<string, string> playerMoves = new Dictionary<string, string>();
-
-      return playerMoves;
-    }
-
     private void DetermineVictor(string[,] players) {
-      int score;
+      
       int playerOne;
       int playerTwo;
       int playerThree;
             
-      for (int i = 0; i < players.GetUpperBound(0); i++) {
-        for (int j = i + 1; j < players.GetUpperBound(0); j++) {
-          if (players[i,1] == "Rock" && players[j,1] == "Scissors") {
+      for (int i = 0; i < players.GetUpperBound(0)+1; i++) {
+        for (int j = i + 1; j < players.GetUpperBound(0)+1; j++) {
+          int score = 0;
+         
+          if (players[i,1] == "1" && players[j,1] == "3") {
             Console.WriteLine("\n" + players[i,0] + " wins over " + players[j,0]);
-            score = int.Parse(players[i,2]);
+            score += int.Parse(players[i,2]);
             score++;
             players[i,2] = score.ToString();
-          } else if (players[j,1] == "Rock" && players[i,1] == "Scissors") {
+          } else if (players[j,1] == "1" && players[i,1] == "3") {
             Console.WriteLine("\n" + players[j,0] + " wins over " + players[i,0]);
-            score = int.Parse(players[j,2]);
+            score += int.Parse(players[j,2]);
             score++;
             players[j,2] = score.ToString();
-          }
+          } else if (players[i,1] == "3" && players[j,1] == "2") {
+            Console.WriteLine("\n" + players[i,0] + " wins over " + players[j,0]);
+            score += int.Parse(players[i,2]);
+            score++;
+            players[i,2] = score.ToString();
+          } else if (players[j,1] == "3" && players[i,1] == "2") {
+            Console.WriteLine("\n" + players[j,0] + " wins over " + players[i,0]);
+            score += int.Parse(players[j,2]);
+            score++;
+            players[j,2] = score.ToString();
+          } else if (players[i,1] == "2" && players[j,1] == "1") {
+            Console.WriteLine("\n" + players[i,0] + " wins over " + players[j,0]);
+            score += int.Parse(players[i,2]);
+            score++;
+            players[i,2] = score.ToString();
+          } else if (players[i,1] == "2" && players[j,1] == "1") {
+            Console.WriteLine("\n" + players[j,0] + " wins over " + players[i,0]);
+            score += int.Parse(players[j,2]);
+            score++;
+            players[j,2] = score.ToString();
+          } else
+          {
+            //Must have been a tie
+            Console.WriteLine("\n" + players[i, 0] + " wins over " + players[j, 0]);
+            score += int.Parse(players[i, 2]);
+            score++;
+            players[i, 2] = score.ToString();
 
-          if (players[i,1] == "Scissors" && players[j,1] == "Paper") {
-            Console.WriteLine("\n" + players[i,0] + " wins over " + players[j,0]);
-            score = int.Parse(players[i,2]);
+            score = 0;
+            score += int.Parse(players[j, 2]);
             score++;
-            players[i,2] = score.ToString();
-          } else if (players[j,1] == "Rock" && players[i,1] == "Scissors") {
-            Console.WriteLine("\n" + players[j,0] + " wins over " + players[i,0]);
-            score = int.Parse(players[j,2]);
-            score++;
-            players[j,2] = score.ToString();
-          }
-
-          if (players[i,1] == "Paper" && players[j,1] == "Rock") {
-            Console.WriteLine("\n" + players[i,0] + " wins over " + players[j,0]);
-            score = int.Parse(players[i,2]);
-            score++;
-            players[i,2] = score.ToString();
-          } else if (players[i,1] == "Paper" && players[j,1] == "Rock") {
-            Console.WriteLine("\n" + players[j,0] + " wins over " + players[i,0]);
-            score = int.Parse(players[j,2]);
-            score++;
-            players[j,2] = score.ToString();
+            players[j, 2] = score.ToString();
           }
         }
       }
