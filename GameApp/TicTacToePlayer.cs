@@ -346,12 +346,15 @@ namespace GameApp
 
       if (playerOne > playerTwo && playerOne > playerThree) {
         Console.WriteLine(players[0,0] + " wins this game!");
-        LogBox.Text = players[0,0] + " wins this game!" + "\n" + LogBox.Text;
+        HostTransmitString(players[0,0] + " wins this game!");
+        LogBox.Text += players[0,0] + " wins this game!" + "\n" + LogBox.Text;
       } else if (playerTwo > playerOne && playerTwo > playerThree) {
         Console.WriteLine(players[1,0] + " wins this game!");
-        LogBox.Text = players[1,0] + " wins this game!" + "\n" + LogBox.Text;
+        HostTransmitString(players[1,0] + " wins this game!");
+        LogBox.Text += players[1,0] + " wins this game!" + "\n" + LogBox.Text;
       } else if (playerThree > playerOne && playerThree > playerTwo) {
         Console.WriteLine(players[2,0] + " wins this game!");
+        HostTransmitString(players[2,0] + " wins this game!");
         LogBox.Text = players[2,0] + " wins this game!" + "\n" + LogBox.Text;
       }
             
