@@ -163,6 +163,7 @@ namespace GameApp
 
                         //}
                     }
+                    //If a reset message is received, reset the game for a new round.
                     else if (newlyReceived.Contains("RESET"))
                     {
                         ResetGame();
@@ -297,16 +298,19 @@ namespace GameApp
         //Returns true if there is a winning comparison.
         private Boolean compareChoice(string i, string j)
         {
+            //Rock vs Scissors
             if (i == "1" && j == "3")
             {
                 return true;
             }
 
+            //Paper vs Rock
             if (i == "2" && j == "1")
             {
                 return true;
             }
 
+            //Scissors vs Paper
             if (i == "3" && j == "2")
             {
                 return true;
@@ -315,6 +319,7 @@ namespace GameApp
             return false;
         }
 
+        //Determines a victor at the end of a round.
         private void DetermineVictor(string[,] players)
         {
 
@@ -387,20 +392,20 @@ namespace GameApp
             //Host and First Client tie.
             else if (playerScore[0] == playerScore[1] && playerScore[0] > playerScore[2])
             {
-                Console.WriteLine(players[0, 0] +" and " + players[1,0] + "tied.");
-                LogBox.Text = players[0, 0] + " and " + players[1, 0] + "tied.\n" + LogBox.Text;
+                Console.WriteLine(players[0, 0] +" and " + players[1,0] + " tied.");
+                LogBox.Text = players[0, 0] + " and " + players[1, 0] + " tied.\n" + LogBox.Text;
             }
             //Host and Second Client tie.
             else if (playerScore[0] == playerScore[2] && playerScore[0] > playerScore[1])
             {
-                Console.WriteLine(players[0, 0] + " and " + players[2, 0] + "tied.");
-                LogBox.Text = players[0, 0] + " and " + players[2, 0] + "tied.\n" + LogBox.Text;
+                Console.WriteLine(players[0, 0] + " and " + players[2, 0] + " tied.");
+                LogBox.Text = players[0, 0] + " and " + players[2, 0] + " tied.\n" + LogBox.Text;
             }
             //First and Second Client tie.
             else if (playerScore[1] == playerScore[2] && playerScore[1] > playerScore[0])
             {
-                Console.WriteLine(players[1, 0] + " and " + players[2, 0] + "tied.");
-                LogBox.Text = players[1, 0] + " and " + players[2, 0] + "tied.\n" + LogBox.Text;
+                Console.WriteLine(players[1, 0] + " and " + players[2, 0] + " tied.");
+                LogBox.Text = players[1, 0] + " and " + players[2, 0] + " tied.\n" + LogBox.Text;
             }
             //Three way tie.
             else
@@ -614,16 +619,20 @@ namespace GameApp
           * */
         private void ResetGame()
         {
+            //Resets Labels
             PlyOneScoreLbl.Text = "...";
             PlyTwoScoreLbl.Text = "...";
             PlyThreeScoreLbl.Text = "...";
+            //Clears locally stored move
             chosenMovement = "";
 
+            //Clears moves of self and other players
             for (int i = 0; i < 3; i++)
             {
                 playerANDMovement[i, 1] = "";
             }
 
+            //Resets string builder if host. Renables Send buttons if client.
             if (IAmHost)
             {
                 foreach (StateObject s in ClientStates)
