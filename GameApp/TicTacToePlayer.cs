@@ -67,7 +67,7 @@ namespace GameApp
             //LogBox.Text += "\n " + s.name + " says " + s.sb.ToString();
             if (!playerSet)
             {
-              LogBox.Text += "\n " + s.sb.ToString() + " : in-game.";
+              LogBox.Text = s.sb.ToString() + " : in-game." + "\n" + LogBox.Text;
               string[] tokens = s.sb.ToString().Split(' ');
 
               //Get movement
@@ -118,7 +118,7 @@ namespace GameApp
         if (SocketConnectedToLobby.Poll(100, SelectMode.SelectRead))
         {
           String newlyReceived = "\n " + ReceiveString(SocketConnectedToLobby);
-          LogBox.Text += newlyReceived;
+          LogBox.Text = newlyReceived + "\n" + LogBox.Text;
           string[] tokens = newlyReceived.Split(' ');
           //Handle read string here as the client!
 
@@ -201,7 +201,7 @@ namespace GameApp
       foreach (StateObject s in ClientStates)
       {
           s.name = s.sb.ToString();
-          LogBox.Text += "\n " + s.name + " connected...";
+          LogBox.Text = s.name + " connected..." + "\n" + LogBox.Text;
       }
 
       MyTimer.Start();
@@ -216,7 +216,7 @@ namespace GameApp
       Console.WriteLine("Waiting For Host's Name");
       LobbyOwner = ReceiveString(SocketConnectedToLobby);
 
-      LogBox.Text += "\n Joined " + LobbyOwner + "'s game.";
+      LogBox.Text = "Joined " + LobbyOwner + "'s game.\n" + LogBox.Text;
 
       StatusLbl.Text = "Connected";
       playerOneLabel.Text = LobbyOwner;
@@ -224,7 +224,7 @@ namespace GameApp
       //Send player name
       TransmitString(SocketConnectedToLobby, PlayerNameBox.Text);
 
-      LogBox.Text += "\n Sucessfully joined the game.";
+      LogBox.Text = "Sucessfully joined the game.\n" + LogBox.Text;
 
       MyTimer.Start();
     }
@@ -346,13 +346,13 @@ namespace GameApp
 
       if (playerOne > playerTwo && playerOne > playerThree) {
         Console.WriteLine(players[0,0] + " wins this game!");
-        LogBox.Text = "\n" + players[0,0] + " wins this game!";
+        LogBox.Text = players[0,0] + " wins this game!" + "\n" + LogBox.Text;
       } else if (playerTwo > playerOne && playerTwo > playerThree) {
         Console.WriteLine(players[1,0] + " wins this game!");
-        LogBox.Text = "\n" + players[1,0] + " wins this game!";
+        LogBox.Text = players[1,0] + " wins this game!" + "\n" + LogBox.Text;
       } else if (playerThree > playerOne && playerThree > playerTwo) {
         Console.WriteLine(players[2,0] + " wins this game!");
-        LogBox.Text = "\n" + players[2,0] + " wins this game!";
+        LogBox.Text = players[2,0] + " wins this game!" + "\n" + LogBox.Text;
       }
             
         //roundOver = true;
@@ -390,7 +390,7 @@ namespace GameApp
                   break;
               }
         }
-        LogBox.Text += "\n " + moveString;
+        LogBox.Text = moveString + "\n" + LogBox.Text;
         //Wait for player moves
 
         //Get Player moves
@@ -427,7 +427,7 @@ namespace GameApp
                   break;
               }
         }
-        LogBox.Text += "\n " + moveString;
+        LogBox.Text = moveString + "\n" + LogBox.Text;
 
         //Send Move
 
@@ -468,13 +468,13 @@ namespace GameApp
 
     private void HostBtn_Click(object sender, EventArgs e)
     {
-      LogBox.Text += "\n Hosting Lobby....";
+      LogBox.Text = "Hosting Lobby....\n" + LogBox.Text;
       HostLobby();
     }
 
     private void JoinBtn_Click(object sender, EventArgs e)
     {
-      LogBox.Text += "\n Joining Lobby....";
+      LogBox.Text = "Joining Lobby....\n" + LogBox.Text;
       JoinLobby();
     }
 
@@ -526,7 +526,7 @@ namespace GameApp
       if (!IAmHost)
       {
           TransmitString(SocketConnectedToLobby, " movement is " + chosenMovement);
-          LogBox.Text += "\n " + "Move sent.";
+          LogBox.Text = "Move sent.\n" + LogBox.Text;
           SendMoveBtn.Enabled = false;
 
       }
@@ -540,14 +540,14 @@ namespace GameApp
             playerANDMovement[0, 1] = chosenMovement;
             PlyOneScoreLbl.Text = playerANDMovement[0, 1];                  //LABEL FOR TESTING
             totalReceived++;
-            LogBox.Text += "\n " + "Move sent to all players.";
+            LogBox.Text = "Move sent to all players.\n" + LogBox.Text;
             SendMoveBtn.Text = "New Game";
             roundOver = true;
         }
         else
         {
             SendMoveBtn.Text = "Send Move";
-            LogBox.Text += "\nreset";
+            LogBox.Text += "reset\n" + LogBox.Text;
             ResetGame();
             HostTransmitString("RESET");
             roundOver = false;
